@@ -1,0 +1,116 @@
+{% extends "base2.html" %}
+{% block page_title %}NEURAL_CHAT_INTERFACE{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto h-[70vh] flex flex-col bg-black/40 border border-white/5 rounded-[3rem] backdrop-blur-xl overflow-hidden shadow-2xl animate-fade-in">
+    {% if video %}
+        <div class="p-6 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-[var(--accent-purple)]/20 rounded-xl flex items-center justify-center border border-[var(--accent-purple)]/30 shadow-[0_0_15px_rgba(112,0,255,0.1)]">
+                    <i class="fa fa-robot text-[var(--accent-purple)]"></i>
+                </div>
+                <div>
+                    <p class="orbitron text-[10px] text-white font-black tracking-widest uppercase">Analysis_Bot_v1.0</p>
+                    <p class="text-[9px] text-[var(--accent-cyan)] font-bold italic">Node_Active: {{ video.title }}</p>
+                </div>
+            </div>
+            <span class="text-[8px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Synced</span>
+        </div>
+
+        <div id="chat-window" class="flex-1 overflow-y-auto p-8 space-y-6 scroll-smooth">
+            <div id="typing-indicator" class="hidden flex gap-4 animate-pulse">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-black text-[var(--accent-purple)]">AI</div>
+                <div class="bg-white/5 p-4 rounded-2xl rounded-tl-none border border-white/5 flex gap-1 items-center">
+                    <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce"></span>
+                    <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-black text-[var(--accent-purple)]">AI</div>
+                <div class="bg-white/5 p-4 rounded-2xl rounded-tl-none border border-white/5 max-w-[80%] shadow-lg">
+                    <p class="text-xs text-gray-300">Neural link established. I have analyzed the binary data for <b>{{ video.title }}</b>. How can I assist with your insights today?</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 bg-black/20 border-t border-white/5">
+            <form id="chat-form" class="flex gap-4">
+                {% csrf_token %}
+                <input type="hidden" name="video_id" value="{{ video.id }}">
+                <input type="text" name="message" id="user-input" autocomplete="off" required
+                       placeholder="Ask about summary, objects, or keywords..."
+                       class="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-xs text-white focus:outline-none focus:border-[var(--accent-cyan)] transition-all placeholder:text-gray-600">
+                <button type="submit" class="w-14 h-14 bg-[var(--accent-cyan)] text-black rounded-2xl flex items-center justify-center shadow-[0_0_15px_rgba(0,242,255,0.3)] hover:scale-105 active:scale-95 transition-all">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <div class="flex-1 flex flex-col items-center justify-center p-20 text-center space-y-6">
+            <i class="fa fa-robot text-6xl text-white/10 animate-pulse"></i>
+            <h3 class="orbitron text-sm text-gray-500 uppercase tracking-[0.4em]">Neural Link Offline</h3>
+            <p class="text-xs text-gray-600 max-w-xs">No analysis data found in current user node. Please process a video to initialize this interface.</p>
+            <a href="{% url 'upload_video' %}" class="px-8 py-3 bg-[var(--accent-cyan)] text-black rounded-xl font-black text-[10px] uppercase tracking-widest hover:shadow-[0_0_20px_var(--accent-cyan)] transition-all">Initialize Pipeline</a>
+        </div>
+    {% endif %}
+</div>
+
+{% if video %}
+<script>
+  const chatForm = document.getElementById('chat-form');
+    const chatWindow = document.getElementById('chat-window');
+    const typingIndicator = document.getElementById('typing-indicator');
+
+    chatForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('user-input');
+        const msg = input.value;
+        if(!msg) return;
+
+        // 1. Show User Message
+        chatWindow.insertAdjacentHTML('beforeend', `
+            <div class="flex gap-4 justify-end animate-fade-in">
+                <div class="bg-[var(--accent-cyan)]/10 p-4 rounded-2xl rounded-tr-none border border-[var(--accent-cyan)]/20 max-w-[80%] shadow-lg">
+                    <p class="text-xs text-white">${msg}</p>
+                </div>
+            </div>
+        `);
+        
+        input.value = '';
+        
+        // 2. Show Typing Indicator & Scroll
+        typingIndicator.classList.remove('hidden');
+        chatWindow.appendChild(typingIndicator); // Keep it at the bottom
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        // 3. Fetch Response
+        const formData = new FormData(chatForm);
+        try {
+            const response = await fetch("{% url 'chat_api' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            });
+            const data = await response.json();
+
+            // 4. Hide Typing Indicator
+            typingIndicator.classList.add('hidden');
+
+            // 5. Show AI Response
+            chatWindow.insertAdjacentHTML('beforeend', `
+                <div class="flex gap-4 animate-fade-in">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-black text-[var(--accent-purple)]">AI</div>
+                    <div class="bg-white/5 p-4 rounded-2xl rounded-tl-none border border-white/5 max-w-[80%] shadow-lg">
+                        <p class="text-xs text-gray-300 leading-relaxed">${data.response}</p>
+                    </div>
+                </div>
+            `);
+        } catch (err) {
+            typingIndicator.classList.add('hidden');
+        }
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    };
+</script>
+{% endif %}
+{% endblock %}

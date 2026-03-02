@@ -1,0 +1,73 @@
+{% extends 'base1.html' %}
+{% load i18n %}
+{% block title %}Login | Video Insights Detection AI{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center py-24 px-4">
+    <div class="max-w-md w-full space-y-10 bg-black/60 backdrop-blur-3xl p-10 rounded-[2.5rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] pulse-box">
+        
+        <div class="text-center">
+            <div class="w-16 h-16 bg-black border border-[var(--accent-cyan)] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(0,242,255,0.2)]">
+                <i class="fa fa-shield-halved text-2xl text-[var(--accent-cyan)]"></i>
+            </div>
+            <h2 class="orbitron text-2xl font-black text-white tracking-tighter uppercase italic">
+                Secure <span class="text-[var(--accent-cyan)]">Access</span>
+            </h2>
+            <p class="mt-3 text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em]">
+                Initialize Neural Session
+            </p>
+        </div>
+        
+        {% if messages %}
+        {% for message in messages %}
+        <div id="alert-box"
+            class="bg-red-500/10 border border-red-500/30 p-4 rounded-xl mb-6 flex justify-between items-center animate-fade-in">
+            <p class="text-[10px] font-black text-red-500 uppercase tracking-widest">
+                <i class="fa fa-triangle-exclamation mr-2"></i> {{ message }}
+            </p>
+            <button onclick="document.getElementById('alert-box').remove()" class="text-red-500/50 hover:text-red-500">
+                <i class="fa fa-xmark"></i>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        
+        <form class="mt-8 space-y-6" method="POST">
+            {% csrf_token %}
+            <div class="space-y-5">
+                <div class="relative group">
+                    <i class="fa fa-envelope absolute left-4 top-4 text-gray-600 group-focus-within:text-[var(--accent-cyan)] transition-colors"></i>
+                    <input name="username" type="email" required placeholder="User Email Address"
+                           class="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl focus:border-[var(--accent-cyan)]/50 focus:ring-1 focus:ring-[var(--accent-cyan)]/30 outline-none font-medium text-white placeholder-gray-600 transition-all">
+                </div>
+                
+                <div class="relative group">
+                    <i class="fa fa-lock absolute left-4 top-4 text-gray-600 group-focus-within:text-[var(--accent-cyan)] transition-colors"></i>
+                    <input id="password" name="password" type="password" required placeholder="Secure Password"
+                           class="w-full pl-12 pr-12 py-4 bg-white/5 border border-white/10 rounded-xl focus:border-[var(--accent-cyan)]/50 focus:ring-1 focus:ring-[var(--accent-cyan)]/30 outline-none font-medium text-white placeholder-gray-600 transition-all">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                <a href="{% url 'password_reset' %}" class="text-gray-600 hover:text-[var(--accent-cyan)] transition">Lost Access?</a>
+                <a href="{% url 'signup' %}" class="text-[var(--accent-purple)] hover:underline">Register Node</a>
+            </div>
+
+            <button type="submit" class="glow-button w-full bg-[var(--accent-cyan)] text-black font-black py-4 rounded-xl uppercase tracking-[0.3em] text-[10px] flex items-center justify-center gap-3 active:scale-95 transition-all">
+                <i class="fa fa-key"></i> Authenticate
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Specific glow for the login box to make it pop against base1.html background */
+    .pulse-box {
+        animation: login-glow 6s infinite alternate;
+    }
+    @keyframes login-glow {
+        from { box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); }
+        to { box-shadow: 0 0 40px rgba(0, 242, 255, 0.1); }
+    }
+</style>
+{% endblock %}

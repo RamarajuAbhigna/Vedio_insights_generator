@@ -1,0 +1,64 @@
+{% extends "base2.html" %}
+{% block title %}System Analytics | Admin AI{% endblock %}
+{% block page_title %}AGGREGATED_SYSTEM_ANALYTICS{% endblock %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in">
+    <div class="grid lg:grid-cols-2 gap-8">
+        
+        <div class="bg-black/40 border border-white/5 p-10 rounded-[3rem] backdrop-blur-xl">
+            <h4 class="orbitron text-xs font-black text-white tracking-widest mb-10 uppercase">Data_Source_Distribution</h4>
+            <div class="space-y-8">
+                <div>
+                    <div class="flex justify-between text-[10px] font-bold uppercase mb-3">
+                        <span class="text-gray-400">Local Binary (MP4)</span>
+                        <span class="text-[var(--accent-cyan)]">{{ mp4_percent|floatformat:1 }}%</span>
+                    </div>
+                    <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div class="h-full bg-[var(--accent-cyan)] shadow-[0_0_15px_var(--accent-cyan)] transition-all duration-1000" 
+                             style="width: {{ mp4_percent }}%"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-[10px] font-bold uppercase mb-3">
+                        <span class="text-gray-400">Stream Synchronization (YouTube)</span>
+                        <span class="text-[var(--accent-purple)]">{{ yt_percent|floatformat:1 }}%</span>
+                    </div>
+                    <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div class="h-full bg-[var(--accent-purple)] shadow-[0_0_15px_var(--accent-purple)] transition-all duration-1000" 
+                             style="width: {{ yt_percent }}%"></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-[9px] text-gray-600 font-black uppercase mt-10 tracking-widest text-center">
+                Total Neural Ingestions Tracked: {{ total_count }}
+            </p>
+        </div>
+
+        <div class="bg-black/40 border border-white/5 p-10 rounded-[3rem] backdrop-blur-xl">
+            <h4 class="orbitron text-xs font-black text-white tracking-widest mb-10 uppercase">Global_Interaction_Tones</h4>
+            
+            <div class="h-40 flex items-end gap-1">
+                {% for point in global_engagement %}
+                <div class="flex-1 bg-white/10 rounded-t-sm hover:bg-[var(--accent-cyan)] transition-all duration-500 hover:shadow-[0_0_10px_var(--accent-cyan)]" 
+                     style="height: {{ point }}%"></div>
+                {% empty %}
+                <p class="text-[9px] text-gray-700 italic">Awaiting pipeline data for synthesis...</p>
+                {% endfor %}
+            </div>
+
+            <div class="flex justify-between mt-6 text-[8px] font-black text-gray-700 uppercase tracking-[0.2em]">
+                <span>Pipeline_Start</span>
+                <span>Peak_Analysis</span>
+                <span>Pipeline_End</span>
+            </div>
+            
+            <p class="text-[9px] text-gray-500 font-bold uppercase mt-8 tracking-widest leading-relaxed">
+                Aggregate engagement trends synthesized from all processed user nodes.
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% load i18n %}
+
+<p class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] ml-4 mb-3 mt-6">
+    {% translate "Command & Control" %}
+</p>
+
+<a href="{% url 'admin_dashboard' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+    <i class="fa fa-terminal"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "Command Center" %}</span>
+</a>
+
+<p class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] ml-4 mb-3 mt-8">
+    {% translate "Global Oversight" %}
+</p>
+
+<a href="{% url 'admin_user_management' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'admin_user_management' %}active{% endif %}">
+    <i class="fa fa-users-gear"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "User Directory" %}</span>
+</a>
+
+<a href="{% url 'admin_analytics' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'admin_analytics' %}active{% endif %}">
+    <i class="fa-solid fa-chart-pie"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "System Analytics" %}</span>
+</a>
+
+<p class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] ml-4 mb-3 mt-8">
+    {% translate "Neural Asset Audit" %}
+</p>
+
+<a href="{% url 'video_list' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'video_list' %}active{% endif %}">
+    <i class="fa fa-clapperboard"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "Universal Archives" %}</span>
+</a>
+
+<p class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] ml-4 mb-3 mt-8">
+    {% translate "Infrastructure" %}
+</p>
+
+<a href="{% url 'admin_ai_monitor' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'admin_ai_monitor' %}active{% endif %}">
+    <i class="fa-solid fa-microchip"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "AI Core Monitor" %}</span>
+</a>
+
+<a href="/admin/" target="_blank" class="nav-item">
+    <i class="fa-solid fa-database"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "Raw Database" %}</span>
+</a>

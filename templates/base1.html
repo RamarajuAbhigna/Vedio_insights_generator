@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Video Insights Detection{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #05070a;
+            --accent-cyan: #00f2ff;
+            --accent-purple: #7000ff;
+            --glass: rgba(15, 23, 42, 0.7);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #e2e8f0;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+
+        /* Navigation Animation */
+        .nav-link {
+            position: relative;
+            padding-bottom: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent-cyan);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 8px var(--accent-cyan);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: var(--accent-purple) !important;
+            text-shadow: 0 0 10px rgba(112, 0, 255, 0.5);
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+            background-color: var(--accent-purple);
+            box-shadow: 0 0 8px var(--accent-purple);
+        }
+
+        /* UI Elements */
+        .glow-button {
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+        }
+
+        .glow-button:hover {
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .glass-header {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0, 242, 255, 0.1);
+        }
+
+        .blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.15) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(50px);
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: rgba(0, 242, 255, 0.3); }
+            50% { border-color: rgba(0, 242, 255, 1); }
+            100% { border-color: rgba(0, 242, 255, 0.3); }
+        }
+
+        .pulse-box {
+            animation: pulse-border 3s infinite;
+            border: 1px solid;
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 10px; }
+    </style>
+</head>
+
+<body>
+    <div class="blob top-[-100px] left-[-100px]"></div>
+    <div class="blob bottom-[-100px] right-[-100px]" style="background: radial-gradient(circle, rgba(0, 242, 255, 0.1) 0%, transparent 70%);"></div>
+
+    <header class="glass-header fixed top-0 w-full z-[100] py-4">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            
+            <a href="/" class="flex items-center gap-3">
+                <div class="pulse-box w-12 h-12 rounded-lg flex items-center justify-center bg-black/50">
+                    <i class="fa-solid fa-bolt-lightning text-2xl text-[var(--accent-cyan)]"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="orbitron text-xl font-black tracking-tighter leading-none">
+                        VIDEO<span class="text-[var(--accent-cyan)]">INSIGHTS</span>
+                    </span>
+                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em]">Detection System</span>
+                </div>
+            </a>
+
+            <nav class="hidden lg:flex items-center gap-10">
+                <a href="/" class="nav-link text-sm font-semibold uppercase tracking-widest {% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="#features" class="nav-link text-sm font-semibold uppercase tracking-widest">Capabilities</a>
+                <a href="#architecture" class="nav-link text-sm font-semibold uppercase tracking-widest">System Architecture</a>
+            </nav>
+
+            <div class="flex items-center gap-5">
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'login' %}" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">Sign In</a>
+                    <a href="{% url 'signup' %}" class="glow-button px-6 py-2.5 rounded-full bg-[var(--accent-cyan)] text-black text-xs font-black uppercase tracking-widest">
+                        Get Started
+                    </a>
+                {% else %}
+                    <div class="flex items-center gap-4">
+                         <span class="text-xs font-bold text-gray-500 uppercase">{{ user.email|truncatechars:15 }}</span>
+                         <a href="{% url 'dashboard' %}" class="glow-button px-6 py-2.5 rounded-full border border-[var(--accent-cyan)] text-[var(--accent-cyan)] text-xs font-black uppercase tracking-widest">
+                            Workspace
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="relative pt-32 pb-20">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="border-t border-white/5 bg-black/40 py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-16">
+                <div class="col-span-2 space-y-6">
+                    <h3 class="orbitron text-2xl font-black italic">VIDEO<span class="text-[var(--accent-cyan)]">INSIGHTS</span></h3>
+                    <p class="text-gray-500 text-sm max-w-md leading-relaxed">
+                        A B.Tech final-year project delivering high-fidelity video analysis, object detection, and speech intelligence.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xs font-black text-white uppercase tracking-widest mb-6">Development Stack</h4>
+                    <ul class="text-sm text-gray-500 space-y-3">
+                        <li>Django Monolithic Core</li>
+                        <li>Python AI Pipeline</li>
+                        <li>OpenCV & NLP Modules</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xs font-black text-white uppercase tracking-widest mb-6">Academic Note</h4>
+                    <ul class="text-sm text-gray-500 space-y-3">
+                        <li>B.Tech 4th Year Flagship</li>
+                        <li>Neural Architecture</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
+                    &copy; 2026 VIDEO INSIGHTS DETECTION SYSTEM • SYSTEM_NODE_STABLE
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

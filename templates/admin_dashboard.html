@@ -1,0 +1,134 @@
+{% extends "base2.html" %}
+{% load i18n %}
+
+{% block title %}Admin Command Center | Video Insights AI{% endblock %}
+{% block page_title %}SYSTEM_COMMAND_CENTER{% endblock %}
+{% block page_subtitle %}Global oversight of neural pipelines and node clusters.{% endblock %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-black/40 border border-white/5 p-6 rounded-[2rem] backdrop-blur-xl">
+            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Total Node Users</p>
+            <div class="flex items-end justify-between">
+                <h3 class="orbitron text-3xl font-black text-white">{{ stats.total_users }}</h3>
+                <i class="fa fa-users text-[var(--accent-cyan)] opacity-20 text-2xl"></i>
+            </div>
+        </div>
+        <div class="bg-black/40 border border-white/5 p-6 rounded-[2rem] backdrop-blur-xl">
+            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Processed Videos</p>
+            <div class="flex items-end justify-between">
+                <h3 class="orbitron text-3xl font-black text-white">{{ stats.total_videos }}</h3>
+                <i class="fa fa-film text-[var(--accent-purple)] opacity-20 text-2xl"></i>
+            </div>
+        </div>
+        <div class="bg-black/40 border border-white/5 p-6 rounded-[2rem] backdrop-blur-xl">
+            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">AI Insights Generated</p>
+            <div class="flex items-end justify-between">
+                <h3 class="orbitron text-3xl font-black text-white">{{ stats.total_insights }}</h3>
+                <i class="fa fa-brain text-[var(--accent-cyan)] opacity-20 text-2xl"></i>
+            </div>
+        </div>
+        <div class="bg-black/40 border border-white/5 p-6 rounded-[2rem] backdrop-blur-xl border-l-2 border-l-[var(--accent-cyan)]">
+            <p class="text-[10px] font-black text-[var(--accent-cyan)] uppercase tracking-widest mb-2">Pipeline Status</p>
+            <div class="flex items-center gap-3">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+                <h3 class="orbitron text-xl font-black text-white uppercase italic">Active</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl">
+            <div class="flex justify-between items-center mb-8">
+                <h4 class="orbitron text-sm font-black text-white tracking-widest">SYSTEM_ENGAGEMENT_TRENDS</h4>
+                <div class="flex gap-2">
+                    <span class="h-2 w-2 rounded-full bg-[var(--accent-cyan)] shadow-[0_0_10px_var(--accent-cyan)]"></span>
+                    <span class="h-2 w-2 rounded-full bg-white/10"></span>
+                </div>
+            </div>
+            <div class="h-64 flex items-end gap-2">
+                {% for i in "12345678901234567890" %}
+                <div class="flex-1 bg-gradient-to-t from-[var(--accent-cyan)]/20 to-[var(--accent-cyan)] rounded-t-lg transition-all duration-1000 hover:opacity-100 opacity-60" 
+                     style="height: {{ forloop.counter|add:stats.total_users }}%;"></div>
+                {% endfor %}
+            </div>
+            <p class="text-[10px] font-bold text-gray-600 mt-6 uppercase tracking-[0.3em]">Real-time engagement aggregation across all nodes</p>
+        </div>
+
+        <div class="bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl">
+            <h4 class="orbitron text-sm font-black text-white tracking-widest mb-8">RESOURCE_DISTRIBUTION</h4>
+            <div class="space-y-6">
+                <div>
+                    <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
+                        <span>Direct MP4 Uploads</span>
+                        <span class="text-[var(--accent-cyan)]">{{ stats.mp4_percent|floatformat:0 }}%</span>
+                    </div>
+                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div class="h-full bg-[var(--accent-cyan)] transition-all duration-1000 shadow-[0_0_10px_var(--accent-cyan)]" style="width: {{ stats.mp4_percent }}%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
+                        <span>YouTube Stream Links</span>
+                        <span class="text-[var(--accent-purple)]">{{ stats.yt_percent|floatformat:0 }}%</span>
+                    </div>
+                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div class="h-full bg-[var(--accent-purple)] transition-all duration-1000 shadow-[0_0_10px_var(--accent-purple)]" style="width: {{ stats.yt_percent }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-black/40 border border-white/5 rounded-[3rem] backdrop-blur-xl overflow-hidden shadow-2xl">
+        <div class="p-8 border-b border-white/5 flex justify-between items-center">
+            <h4 class="orbitron text-sm font-black text-white tracking-widest">LATEST_NODE_ACTIVATIONS</h4>
+            <a href="{% url 'admin_user_management' %}" class="text-[10px] font-black text-[var(--accent-cyan)] uppercase tracking-widest hover:underline">View All Users</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-white/5">
+                        <th class="px-8 py-6">User Node</th>
+                        <th class="px-8 py-6">Identity Status</th>
+                        <th class="px-8 py-6 text-right">Terminal Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="text-xs font-medium">
+                    {% for user_node in node_users %}
+                    <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                        <td class="px-8 py-6 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)] flex items-center justify-center font-bold">{{ user_node.email|first|upper }}</div>
+                            <div>
+                                <p class="text-white font-bold">{{ user_node.email }}</p>
+                                <p class="text-[9px] text-gray-600 uppercase tracking-tighter">Joined: {{ user_node.date_joined|date:"N j, Y" }}</p>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            {% if user_node.is_active %}
+                                <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-[9px] font-black uppercase border border-emerald-500/20">Active_Node</span>
+                            {% else %}
+                                <span class="px-3 py-1 bg-red-500/10 text-red-500 rounded-full text-[9px] font-black uppercase border border-red-500/20">Restricted</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-8 py-6 text-right">
+                            <button class="text-gray-500 hover:text-red-500 transition-colors mx-2"><i class="fa fa-power-off"></i></button>
+                            <button class="text-gray-500 hover:text-[var(--accent-cyan)] transition-colors"><i class="fa fa-eye"></i></button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-8 py-10 text-center text-gray-600 italic">No active user nodes detected in current database sync.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

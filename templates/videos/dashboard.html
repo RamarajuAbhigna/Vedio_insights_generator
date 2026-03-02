@@ -1,0 +1,86 @@
+{% extends "base2.html" %}
+{% load i18n %}
+
+{% block title %}Node Overview | Video Insights AI{% endblock %}
+{% block page_title %}OPERATIONAL_OVERVIEW{% endblock %}
+{% block page_subtitle %}Real-time status of your neural analysis nodes.{% endblock %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-black/40 border border-white/5 p-6 rounded-[2rem] backdrop-blur-xl group hover:border-[var(--accent-cyan)]/30 transition-all">
+            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Active Pipelines</p>
+            <h3 class="orbitron text-2xl font-black text-white italic">
+                {{ stats.active_pipelines|stringformat:"02d" }}
+            </h3>
+        </div>
+        
+        <div class="bg-black/40 border border-white/5 p-6 rounded-[2rem] backdrop-blur-xl group hover:border-[var(--accent-cyan)]/30 transition-all">
+            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Total Insights</p>
+            <h3 class="orbitron text-2xl font-black text-[var(--accent-cyan)] italic">
+                {{ stats.total_insights }}
+            </h3>
+        </div>
+        
+        <div class="bg-black/40 border border-white/5 p-6 rounded-[2rem] backdrop-blur-xl border-l-2 border-[var(--accent-purple)] group hover:border-[var(--accent-purple)]/50 transition-all">
+            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Storage Used</p>
+            <h3 class="orbitron text-2xl font-black text-white italic">
+                {{ stats.storage_used }}
+            </h3>
+        </div>
+    </div>
+
+    <div class="bg-black/40 border border-white/5 rounded-[2.5rem] backdrop-blur-xl overflow-hidden shadow-2xl">
+        <div class="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
+            <h4 class="orbitron text-sm font-black text-white tracking-widest uppercase">Recent_Transmissions</h4>
+            <a href="{% url 'video_list' %}" class="text-[9px] font-black text-[var(--accent-cyan)] uppercase tracking-widest hover:underline hover:shadow-[0_0_10px_var(--accent-cyan)] transition-all">View All Library</a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="text-[9px] font-black text-gray-500 uppercase tracking-widest border-b border-white/5">
+                        <th class="px-8 py-5">Analysis Identifier</th>
+                        <th class="px-8 py-5">Source Type</th>
+                        <th class="px-8 py-5">Timestamp</th>
+                        <th class="px-8 py-5 text-right">Pipeline Status</th>
+                    </tr>
+                </thead>
+                <tbody class="text-xs">
+                    {% for video in recent_videos %}
+                    <tr class="border-b border-white/5 hover:bg-white/[0.03] transition-colors group">
+                        <td class="px-8 py-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-[var(--accent-cyan)] animate-pulse"></div>
+                                <a href="{% url 'video_insight_detail' video.pk %}" class="text-white font-bold group-hover:text-[var(--accent-cyan)] transition-colors">
+                                    {{ video.title }}
+                                </a>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            {% if video.video_file %}
+                                <span class="text-gray-400 font-medium tracking-tighter"><i class="fa fa-file-video mr-2 text-[var(--accent-cyan)]"></i>MP4_BINARY</span>
+                            {% else %}
+                                <span class="text-gray-400 font-medium tracking-tighter"><i class="fa fa-youtube mr-2 text-red-500"></i>YT_STREAM</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-8 py-6 text-gray-500 font-mono tracking-tighter">{{ video.created_at|date:"Y-m-d H:i" }}</td>
+                        <td class="px-8 py-6 text-right">
+                            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-[9px] font-black uppercase border border-emerald-500/20 shadow-[0_0_5px_rgba(16,185,129,0.1)]">Synced</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-8 py-24 text-center">
+                            <i class="fa fa-link-slash text-4xl text-white/5 mb-4 block"></i>
+                            <p class="text-gray-600 uppercase tracking-[0.4em] text-[10px]">No neural nodes active in current workspace index.</p>
+                            <a href="{% url 'upload_video' %}" class="mt-6 inline-block text-[10px] text-[var(--accent-cyan)] font-black hover:underline uppercase tracking-widest">Initialize Node Upload</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

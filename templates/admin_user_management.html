@@ -1,0 +1,74 @@
+{% extends "base2.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in">
+    <div class="bg-black/40 border border-white/5 p-6 rounded-[2rem] backdrop-blur-xl flex flex-wrap justify-between items-center gap-4 shadow-2xl">
+        <div class="relative w-full md:w-96">
+            <i class="fa fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
+            <input type="text" placeholder="Search Node ID or Email..." class="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-xs text-white focus:outline-none focus:border-[var(--accent-cyan)] transition-all">
+        </div>
+        <button class="bg-white/5 border border-white/10 px-6 py-3 rounded-xl text-[10px] font-black uppercase text-white tracking-widest hover:bg-white/10 transition-all border-b-2 border-b-[var(--accent-cyan)]">Export_System_Logs</button>
+    </div>
+
+    <div class="bg-black/40 border border-white/5 rounded-[3rem] backdrop-blur-xl overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-white/5">
+                        <th class="px-8 py-6">Neural_Identity</th>
+                        <th class="px-8 py-6">Status_Node</th>
+                        <th class="px-8 py-6">Total_Ingestions</th>
+                        <th class="px-8 py-6">Registration_Date</th>
+                        <th class="px-8 py-6 text-right">Terminal_Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="text-xs font-medium">
+                    {% for node_user in node_users %}
+                    <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
+                        <td class="px-8 py-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--accent-cyan)]/20 to-transparent border border-[var(--accent-cyan)]/30 flex items-center justify-center font-bold text-[var(--accent-cyan)] orbitron">{{ node_user.email|first|upper }}</div>
+                                <div>
+                                    <p class="text-white font-bold">{{ node_user.email }}</p>
+                                    <p class="text-[9px] text-gray-600 uppercase tracking-tighter">ID: NODE-{{ node_user.id|stringformat:"04d" }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            {% if node_user.is_active %}
+                                <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-[9px] font-black uppercase border border-emerald-500/20">Active_Node</span>
+                            {% else %}
+                                <span class="px-3 py-1 bg-red-500/10 text-red-500 rounded-full text-[9px] font-black uppercase border border-red-500/20">Restricted</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-8 py-6 text-gray-400">
+                            <span class="text-white font-bold">{{ node_user.video_count }}</span> Analyzed Videos
+                        </td>
+                        <td class="px-8 py-6 text-gray-500">{{ node_user.date_joined|date:"Y-m-d H:i" }}</td>
+                        
+                        <td class="px-8 py-6 text-right">
+                            <div class="flex justify-end gap-3">
+                                <form method="POST" action="{% url 'admin_toggle_status' node_user.id %}" class="inline">
+                                    {% csrf_token %}
+                                    <button class="p-2 {% if node_user.is_active %}text-gray-500 hover:text-amber-500{% else %}text-amber-500 hover:text-emerald-500{% endif %} transition-colors" title="Toggle Access">
+                                        <i class="fa fa-power-off"></i>
+                                    </button>
+                                </form>
+
+                                <form method="POST" action="{% url 'admin_delete_user' node_user.id %}" class="inline" onsubmit="return confirm('Confirm permanent purge of this identity?')">
+                                    {% csrf_token %}
+                                    <button class="p-2 text-gray-500 hover:text-red-500 transition-colors" title="Purge Node">
+                                        <i class="fa fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

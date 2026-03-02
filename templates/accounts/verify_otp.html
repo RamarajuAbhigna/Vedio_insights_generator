@@ -1,0 +1,61 @@
+{% extends 'base1.html' %}
+{% block title %}Verify Node | Video Insights Detection AI{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center py-24 px-4">
+    <div class="max-w-md w-full bg-black/60 backdrop-blur-3xl p-10 rounded-[2.5rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] pulse-box text-center">
+        
+        <div class="w-16 h-16 bg-black border border-[var(--accent-cyan)] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(0,242,255,0.2)]">
+            <i class="fa fa-key-skeleton text-2xl text-[var(--accent-cyan)] animate-pulse"></i>
+        </div>
+
+        <h2 class="orbitron text-2xl font-black text-white mb-2 uppercase italic tracking-tighter">
+            Verify <span class="text-[var(--accent-cyan)]">Identity</span>
+        </h2>
+        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-10 leading-relaxed">
+            Check your transmitted email for the 6-digit access code dispatched by the system.
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-6 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-[9px] font-black uppercase tracking-widest">
+                    <i class="fa fa-triangle-exclamation mr-2"></i> {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" class="space-y-8">
+            {% csrf_token %}
+            <div class="relative group">
+                <input name="otp" id="otp-input" maxlength="6" required placeholder="000000" autocomplete="off"
+                       class="w-full text-center text-4xl tracking-[0.6em] py-5 bg-white/5 border border-white/10 rounded-2xl focus:border-[var(--accent-cyan)]/50 focus:ring-1 focus:ring-[var(--accent-cyan)]/30 outline-none font-black text-white placeholder-gray-800 transition-all">
+            </div>
+
+            <button type="submit" class="glow-button w-full bg-[var(--accent-cyan)] text-black font-black py-4 rounded-xl uppercase tracking-[0.3em] text-[10px] active:scale-95 transition-all shadow-[0_0_20px_rgba(0,242,255,0.2)]">
+                Activate Access Node
+            </button>
+        </form>
+
+        <div class="mt-8">
+            <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest leading-relaxed">
+                Didn't receive the transmission? 
+                <a href="#" class="text-[var(--accent-purple)] hover:underline ml-1">Resend Node Code</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-focus the input on page load for a smoother UX
+    window.onload = () => document.getElementById('otp-input').focus();
+</script>
+
+<style>
+    input[name="otp"]::placeholder { color: rgba(0, 242, 255, 0.05); }
+    .pulse-box { animation: verify-glow 6s infinite alternate; }
+    @keyframes verify-glow {
+        from { box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); }
+        to { box-shadow: 0 0 40px rgba(0, 242, 255, 0.1); }
+    }
+</style>
+{% endblock %}

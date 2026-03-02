@@ -1,0 +1,55 @@
+{% load i18n %}
+
+<p class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] ml-4 mb-3 mt-6">
+    {% translate "Neural Operations" %}
+</p>
+
+<a href="{% url 'dashboard' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+    <i class="fa fa-gauge-high"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "Node Overview" %}</span>
+</a>
+
+<a href="{% url 'upload_video' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'upload_video' %}active{% endif %}">
+    <i class="fa fa-cloud-arrow-up"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "Process Video" %}</span>
+</a>
+
+<a href="{% url 'video_list' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'video_list' %}active{% endif %}">
+    <i class="fa fa-folder-tree"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "Insight Library" %}</span>
+</a>
+
+<p class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] ml-4 mb-3 mt-8">
+    {% translate "AI Intelligence" %}
+</p>
+
+<a href="{% url 'ai_chatbot' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'ai_chatbot' %}active{% endif %}">
+    <i class="fa fa-robot"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "Neural Chat" %}</span>
+</a>
+
+<a href="{% url 'analytics_dashboard' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'analytics_dashboard' %}active{% endif %}">
+    <i class="fa fa-chart-line"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "Engagement Hub" %}</span>
+</a>
+
+<p class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] ml-4 mb-3 mt-8">
+    {% translate "Management" %}
+</p>
+
+<a href="{% url 'profile' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+    <i class="fa fa-user-gear"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "Node Settings" %}</span>
+</a>
+
+<a href="{% url 'password_reset' %}" 
+   class="nav-item {% if request.resolver_match.url_name == 'password_reset' %}active{% endif %}">
+    <i class="fa fa-shield-halved"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "Security Hub" %}</span>
+</a>

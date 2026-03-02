@@ -1,0 +1,171 @@
+{% extends "base2.html" %}
+
+{% block title %}Insight Library | Video Insights AI{% endblock %}
+{% block page_title %}NEURAL_ARCHIVES{% endblock %}
+{% block page_subtitle %}Accessing historical video intelligence data from analyzed nodes.{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+<div id="toast-container" class="fixed top-24 right-8 z-[10001] space-y-4">
+    {% for message in messages %}
+    <div class="flex items-center gap-4 bg-black/80 border border-emerald-500/30 backdrop-blur-xl px-6 py-4 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.1)] animate-fade-in">
+        <div class="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center border border-emerald-500/40">
+            <i class="fa fa-check text-emerald-500 text-xs"></i>
+        </div>
+        <div>
+            <p class="orbitron text-[9px] font-black text-white uppercase tracking-widest">System_Message</p>
+            <p class="text-[10px] text-gray-400 mt-1">{{ message }}</p>
+        </div>
+        <button onclick="this.parentElement.remove()" class="ml-4 text-gray-600 hover:text-white transition-colors">
+            <i class="fa fa-xmark text-xs"></i>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+<script>
+    setTimeout(() => {
+        const toast = document.getElementById('toast-container');
+        if (toast) {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => toast.remove(), 500);
+        }
+    }, 5000);
+</script>
+{% endif %}
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
+    {% for video in videos %}
+    <div class="bg-black/40 border border-white/5 rounded-[2.5rem] overflow-hidden group hover:border-[var(--accent-cyan)]/30 transition-all shadow-2xl">
+        <div class="aspect-video bg-white/5 flex items-center justify-center relative">
+            <i class="fa fa-clapperboard text-4xl text-white/10 group-hover:text-[var(--accent-cyan)]/20 transition-all"></i>
+            
+            <div class="absolute top-4 right-4">
+                {% if video.video_file %}
+                    <span class="bg-black/60 backdrop-blur-md p-2 rounded-lg border border-white/10 text-[var(--accent-cyan)]">
+                        <i class="fa fa-file-video"></i>
+                    </span>
+                {% else %}
+                    <span class="bg-black/60 backdrop-blur-md p-2 rounded-lg border border-white/10 text-red-500">
+                        <i class="fa fa-youtube"></i>
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="absolute bottom-4 left-4">
+                <span class="bg-black/60 backdrop-blur-md text-[8px] font-black text-white px-3 py-1 rounded-full uppercase tracking-widest border border-white/10">
+                    {{ video.created_at|date:"M d, Y" }}
+                </span>
+            </div>
+        </div>
+
+        <div class="p-6 space-y-4">
+            {% if user.role == 'admin' %}
+            <p class="text-[8px] font-bold text-[var(--accent-purple)] uppercase tracking-widest bg-[var(--accent-purple)]/10 px-2 py-1 rounded inline-block">
+                Node_Owner: {{ video.user.email|truncatechars:15 }}
+            </p>
+            {% endif %}
+
+            <h3 class="orbitron text-sm font-black text-white truncate">{{ video.title }}</h3>
+            
+            <div class="flex items-center justify-between">
+                <p class="text-[9px] font-black text-gray-600 uppercase tracking-widest">
+                    {% if video.video_file %}MP4_BINARY_SOURCE{% else %}EXTERNAL_STREAM{% endif %}
+                </p>
+                <div class="flex gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)] animate-pulse"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-white/10"></span>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-4">
+                <a href="{% url 'video_insight_detail' video.pk %}" 
+                   onclick="showNeuralLoader('{{ video.title }}')" 
+                   class="flex-1 py-4 rounded-xl bg-white/5 border border-white/5 text-center text-[10px] font-black text-white uppercase tracking-widest hover:bg-[var(--accent-cyan)] hover:text-black hover:shadow-[0_0_15px_var(--accent-cyan)] transition-all">
+                    Access Insights
+                </a>
+                <button onclick="confirmPurge('{{ video.pk }}', '{{ video.title }}')" 
+                        class="px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                    <i class="fa fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full py-32 text-center bg-black/20 border border-dashed border-white/5 rounded-[3rem]">
+        <i class="fa fa-folder-open text-6xl text-white/5 mb-6"></i>
+        <p class="orbitron text-xs text-gray-600 uppercase tracking-[0.3em]">No records found in neural archives</p>
+        <a href="{% url 'upload_video' %}" class="mt-8 inline-block text-[10px] font-black text-[var(--accent-cyan)] uppercase hover:underline">Initialize Ingestion Pipeline</a>
+    </div>
+    {% endfor %}
+</div>
+
+<div id="neural-loader-overlay" class="fixed inset-0 z-[9999] hidden flex-col items-center justify-center bg-black/90 backdrop-blur-2xl">
+    <div class="flex flex-col items-center text-center">
+        <div class="relative w-20 h-20 mb-6">
+            <div class="absolute inset-0 border-2 border-[var(--accent-cyan)]/20 rounded-full"></div>
+            <div class="absolute inset-0 border-2 border-t-[var(--accent-cyan)] rounded-full animate-spin"></div>
+            <div class="absolute inset-3 border border-t-[var(--accent-purple)] rounded-full animate-spin [animation-duration:1.5s]"></div>
+        </div>
+        <h3 class="orbitron text-[10px] font-black text-white tracking-[0.4em] uppercase mb-2">Synchronizing_Node</h3>
+        <p id="loader-title" class="text-[9px] font-mono text-[var(--accent-cyan)] uppercase tracking-widest">Accessing Brain Data...</p>
+    </div>
+</div>
+
+<div id="delete-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center bg-black/90 backdrop-blur-xl">
+    <div class="bg-black/60 border border-red-500/30 p-10 rounded-[2.5rem] max-w-sm w-full text-center space-y-6 animate-fade-in">
+        <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto border border-red-500/40">
+            <i class="fa fa-exclamation-triangle text-red-500 text-xl animate-pulse"></i>
+        </div>
+        <div>
+            <h3 class="orbitron text-xs font-black text-white uppercase tracking-widest">Terminate_Node?</h3>
+            <p id="delete-node-name" class="text-[10px] text-gray-500 mt-2 font-mono uppercase"></p>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="closeDeleteModal()" class="flex-1 py-3 rounded-xl bg-white/5 text-white text-[9px] font-black uppercase tracking-widest">Cancel</button>
+            <a id="confirm-delete-link" href="#" class="flex-1 py-3 rounded-xl bg-red-600 text-white text-[9px] font-black uppercase tracking-widest shadow-[0_0_20px_rgba(220,38,38,0.4)]">Purge</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Show loading overlay when accessing insights
+    function showNeuralLoader(videoTitle) {
+        const loader = document.getElementById('neural-loader-overlay');
+        const titleDisplay = document.getElementById('loader-title');
+        if (loader) {
+            titleDisplay.innerText = `Establishing Link to: ${videoTitle}`;
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+        }
+    }
+
+    // Trigger Delete Modal with Correct URL
+    function confirmPurge(pk, title) {
+        const modal = document.getElementById('delete-modal');
+        const link = document.getElementById('confirm-delete-link');
+        const nameDisplay = document.getElementById('delete-node-name');
+        
+        // Correct path based on core/urls.py (portal/) and videos/urls.py (delete/)
+        link.href = `/portal/delete/${pk}/`; 
+        
+        nameDisplay.innerText = `Identity: ${title}`;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('delete-modal').classList.add('hidden');
+        document.getElementById('delete-modal').classList.remove('flex');
+    }
+
+    // Close modal on outside click
+    window.onclick = function(event) {
+        const modal = document.getElementById('delete-modal');
+        if (event.target == modal) {
+            closeDeleteModal();
+        }
+    }
+</script>
+{% endblock %}

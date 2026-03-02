@@ -1,0 +1,226 @@
+{% extends "base2.html" %}
+{% block title %}Neural Insights | {{ video.title }}{% endblock %}
+{% block page_title %}INSIGHT_EXTRACTION_NODE{% endblock %}
+{% block page_subtitle %}Accessing deep-layer analytics for session: {{ video.title }}{% endblock %}
+
+{% block content %}
+
+<div id="neural-loader" class="fixed inset-0 z-[100] hidden flex flex-col items-center justify-center bg-black/80 backdrop-blur-md">
+    <div class="relative">
+        <div class="w-24 h-24 rounded-full border-4 border-[var(--accent-cyan)] border-t-transparent animate-spin"></div>
+        <div class="absolute inset-0 w-24 h-24 rounded-full border border-[var(--accent-cyan)] animate-ping opacity-20"></div>
+    </div>
+    <h2 class="orbitron mt-8 text-xl font-black text-white tracking-[0.3em] uppercase animate-pulse">
+        Initializing_Neural_Sync
+    </h2>
+    <p class="text-[10px] text-gray-500 font-bold uppercase mt-2 tracking-widest">
+        Gemini Intelligence Core is watching the stream...
+    </p>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-8 animate-fade-in">
+
+    <!-- LEFT COLUMN -->
+    <div class="lg:col-span-2 space-y-8">
+
+        <!-- VIDEO PLAYER -->
+        <div class="bg-black/40 border border-white/5 p-4 rounded-[2.5rem] backdrop-blur-xl overflow-hidden shadow-2xl">
+            {% if video.video_file %}
+                <video class="w-full rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)]" controls>
+                    <source src="{{ video.video_file.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            {% elif video.embed_url %}
+                <div class="aspect-video w-full rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+                        <iframe width="100%" height="100%"
+                                src="{{ video.embed_url }}"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                        </iframe>
+                </div>
+            {% else %}
+                <div class="aspect-video bg-black flex flex-col items-center justify-center rounded-2xl border border-white/10">
+                    <i class="fa fa-triangle-exclamation text-4xl text-amber-500 mb-4 opacity-50"></i>
+                    <p class="orbitron text-[9px] text-gray-500 tracking-[0.4em] uppercase">
+                        No_Media_Source_Detected
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- CONTENT ANALYTICS PANEL -->
+<div class="bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl space-y-8">
+
+    <!-- OPTION A: KEY MOMENTS -->
+    <div>
+        <h4 class="orbitron text-[10px] font-black text-[var(--accent-cyan)] tracking-widest uppercase mb-4">
+            Key_Moments_Timeline
+        </h4>
+        <ul class="space-y-2">
+            {% for m in key_moments %}
+            <li class="text-[11px] text-gray-400 flex gap-4">
+                <span class="text-[var(--accent-cyan)] font-mono">{{ m.time }}</span>
+                <span>{{ m.label }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- OPTION B: SPEECH VS SILENCE -->
+    <div>
+        <h4 class="orbitron text-[10px] font-black text-[var(--accent-purple)] tracking-widest uppercase mb-3">
+            Speech_vs_Silence
+        </h4>
+        <div class="flex items-center gap-4">
+            <div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-[var(--accent-cyan)]"
+                     style="width: {{ speech_ratio }}%"></div>
+            </div>
+            <span class="text-[10px] text-gray-400">
+                {{ speech_ratio }}% Speech / {{ silence_ratio }}% Silence
+            </span>
+        </div>
+    </div>
+
+    <!-- OPTION C: VISION CONFIDENCE -->
+    <div>
+        <h4 class="orbitron text-[10px] font-black text-white tracking-widest uppercase mb-4">
+            Vision_Confidence
+        </h4>
+        {% for v in vision_confidence %}
+        <div class="mb-2">
+            <div class="flex justify-between text-[10px] text-gray-400 mb-1">
+                <span>{{ v.label }}</span>
+                <span>{{ v.confidence }}%</span>
+            </div>
+            <div class="h-1 bg-white/10 rounded-full">
+                <div class="h-full bg-[var(--accent-cyan)]"
+                     style="width: {{ v.confidence }}%"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="space-y-8">
+
+        <div class="bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl shadow-lg">
+            <h4 class="orbitron text-[10px] font-black text-white tracking-widest mb-6 uppercase">
+                Vision_Intelligence
+            </h4>
+            <div class="flex flex-wrap gap-2">
+                {% for obj in video.objects_detected %}
+                    <span class="bg-[var(--accent-cyan)]/5 text-[var(--accent-cyan)] text-[9px] font-black px-3 py-2 rounded-xl border border-[var(--accent-cyan)]/10 uppercase tracking-tighter">
+                        <i class="fa fa-crosshairs mr-1 opacity-50"></i> {{ obj }}
+                    </span>
+                {% empty %}
+                    <p class="text-[9px] text-gray-700 italic">Vision node initializing...</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl h-[420px] flex flex-col shadow-lg border-r-2 border-r-[var(--accent-purple)]/20">
+            <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                <h4 class="orbitron text-[10px] font-black text-[var(--accent-purple)] tracking-widest mb-6 uppercase">
+                    Neural_Transcript
+                </h4>
+
+                <p class="text-xs text-gray-400 leading-relaxed mb-10 italic font-medium">
+                    "{{ video.transcript|default:"Decoding audio stream..." }}"
+                </p>
+
+                <h4 class="orbitron text-[10px] font-black text-white tracking-widest mb-4 uppercase">
+                    Topic_Keywords
+                </h4>
+                <div class="flex flex-wrap gap-2 mb-6">
+                    {% for kw in video.keywords %}
+                        <span class="text-[10px] text-gray-500 font-black">#{{ kw }}</span>
+                    {% endfor %}
+                </div>
+
+                <h4 class="orbitron text-[10px] font-black text-white tracking-widest mb-4 uppercase">
+                    Summary_Synthesis
+                </h4>
+                <p class="text-[11px] text-gray-500 leading-relaxed font-medium">
+                    {{ video.summary|default:"Synthesizing summary node..." }}
+                </p>
+            </div>
+            {% if video.ai_failed %}
+                <p class="text-[10px] text-red-400 mt-4 uppercase tracking-widest">
+                    AI processing paused due to quota limits. Please retry later.
+                </p>
+            {% endif %}
+        </div>
+        
+
+        <a href="{% url 'ai_chatbot' %}"
+           class="block w-full glow-button bg-gradient-to-r from-[var(--accent-purple)] to-[#5000b8] text-white text-center py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] shadow-[0_0_20px_rgba(112,0,255,0.2)]">
+            Initialize Neural Chat
+        </a>
+    </div>
+</div>
+
+<!-- NEURAL WAVE ENGINE -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById("neuralWaveCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    let t = 0;
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.beginPath();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "rgba(0,255,255,0.9)";
+        ctx.shadowColor = "rgba(0,255,255,0.6)";
+        ctx.shadowBlur = 20;
+
+        const mid = canvas.height / 2;
+
+        for (let x = 0; x <= canvas.width; x++) {
+            const p = x / canvas.width;
+
+            const y =
+                mid +
+                Math.sin(p * 10 + t) * 30 +
+                Math.sin(p * 22 + t * 1.5) * 12 +
+                Math.sin(p * 4 - t) * 8;
+
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+
+        ctx.stroke();
+        t += 0.035;
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+});
+</script>
+
+<style>
+#neuralWaveCanvas {
+    filter: drop-shadow(0 0 25px rgba(0,255,255,0.5));
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 3px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 10px; }
+</style>
+
+{% endblock %}
