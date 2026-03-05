@@ -3,7 +3,7 @@ from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)  # Ensure .env variables are loaded and override any existing ones
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -53,7 +53,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],  # ← your templates folder is checked FIRST
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,3 +133,9 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 # ---------------- DEFAULT ----------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Add these at the bottom of settings.py
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
+EMAIL_USE_HTML = True
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
+EMAIL_FROM = os.getenv('EMAIL_HOST_USER')

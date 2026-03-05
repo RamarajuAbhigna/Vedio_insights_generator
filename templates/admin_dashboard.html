@@ -43,22 +43,28 @@
     </div>
 
     <div class="grid lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl">
-            <div class="flex justify-between items-center mb-8">
-                <h4 class="orbitron text-sm font-black text-white tracking-widest">SYSTEM_ENGAGEMENT_TRENDS</h4>
-                <div class="flex gap-2">
-                    <span class="h-2 w-2 rounded-full bg-[var(--accent-cyan)] shadow-[0_0_10px_var(--accent-cyan)]"></span>
-                    <span class="h-2 w-2 rounded-full bg-white/10"></span>
-                </div>
-            </div>
-            <div class="h-64 flex items-end gap-2">
-                {% for i in "12345678901234567890" %}
-                <div class="flex-1 bg-gradient-to-t from-[var(--accent-cyan)]/20 to-[var(--accent-cyan)] rounded-t-lg transition-all duration-1000 hover:opacity-100 opacity-60" 
-                     style="height: {{ forloop.counter|add:stats.total_users }}%;"></div>
-                {% endfor %}
-            </div>
-            <p class="text-[10px] font-bold text-gray-600 mt-6 uppercase tracking-[0.3em]">Real-time engagement aggregation across all nodes</p>
+        {% comment %}
+<div class="lg:col-span-2 bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl">
+    <div class="flex justify-between items-center mb-8">
+        <h4 class="orbitron text-sm font-black text-white tracking-widest">SYSTEM_ENGAGEMENT_TRENDS</h4>
+        <div class="flex gap-2">
+            <span class="h-2 w-2 rounded-full bg-[var(--accent-cyan)] shadow-[0_0_10px_var(--accent-cyan)]"></span>
+            <span class="h-2 w-2 rounded-full bg-white/10"></span>
         </div>
+    </div>
+
+    <div class="h-64 flex items-end gap-2">
+        {% for i in "12345678901234567890" %}
+        <div class="flex-1 bg-gradient-to-t from-[var(--accent-cyan)]/20 to-[var(--accent-cyan)] rounded-t-lg transition-all duration-1000 hover:opacity-100 opacity-60" 
+             style="height: {{ forloop.counter|add:stats.total_users }}%;"></div>
+        {% endfor %}
+    </div>
+
+    <p class="text-[10px] font-bold text-gray-600 mt-6 uppercase tracking-[0.3em]">
+        Real-time engagement aggregation across all nodes
+    </p>
+</div>
+{% endcomment %}
 
         <div class="bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl">
             <h4 class="orbitron text-sm font-black text-white tracking-widest mb-8">RESOURCE_DISTRIBUTION</h4>

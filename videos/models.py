@@ -19,13 +19,20 @@ class VideoAnalysis(models.Model):
     # Changed default to list to match the bar chart iteration in templates
     engagement_data = models.JSONField(default=list, null=True, blank=True) 
     objects_detected = models.JSONField(default=list) # Computer Vision Node
-    
+    key_moments = models.JSONField(default=list, blank=True)
     # NEW: Added for Feature 12 (Activity Recognition)
     activity_type = models.CharField(max_length=100, default="General Analysis")
     
     created_at = models.DateTimeField(auto_now_add=True)
     ai_processed = models.BooleanField(default=False)
     ai_failed = models.BooleanField(default=False)
+
+class ChatMessage(models.Model):
+    video = models.ForeignKey(VideoAnalysis, on_delete=models.CASCADE, related_name='chat_messages')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user_message = models.TextField()
+    ai_response = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         # FIXED: Using email because username is None in your custom model

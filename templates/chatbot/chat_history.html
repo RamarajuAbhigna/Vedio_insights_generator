@@ -1,0 +1,109 @@
+{% extends "base2.html" %}
+{% block page_title %}CHAT_HISTORY{% endblock %}
+{% block page_subtitle %}All neural conversation logs across video nodes{% endblock %}
+
+{% block content %}
+<div class="flex gap-6 animate-fade-in" style="min-height: 75vh;">
+
+    <!-- LEFT: Video List -->
+    <div class="w-72 flex-shrink-0 bg-black/40 border border-white/5 rounded-[2.5rem] backdrop-blur-xl overflow-hidden flex flex-col">
+        <div class="p-6 border-b border-white/5">
+            <p class="orbitron text-[9px] font-black text-[var(--accent-purple)] tracking-widest uppercase">Video_Nodes</p>
+            <p class="text-[8px] text-gray-600 mt-1">Click a video to view its chat</p>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
+            {% if videos_with_chats %}
+                {% for video in videos_with_chats %}
+                <a href="{% url 'chat_history_video' video.id %}"
+                   class="block p-4 rounded-2xl border transition-all
+                   {% if selected_video.id == video.id %}
+                       bg-[var(--accent-purple)]/10 border-[var(--accent-purple)]/30 text-[var(--accent-purple)]
+                   {% else %}
+                       bg-white/[0.02] border-white/5 text-gray-400 hover:border-[var(--accent-cyan)]/30 hover:text-[var(--accent-cyan)]
+                   {% endif %}">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+                            <i class="fa fa-film text-[10px]"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="orbitron text-[9px] font-black uppercase tracking-wider truncate">{{ video.title }}</p>
+                            <p class="text-[8px] text-gray-600 mt-0.5">{{ video.chat_messages.count }} message{% if video.chat_messages.count != 1 %}s{% endif %}</p>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            {% else %}
+                <div class="flex flex-col items-center justify-center h-full text-center py-16 space-y-3">
+                    <i class="fa fa-comment-slash text-2xl text-white/5"></i>
+                    <p class="text-[8px] text-gray-700 uppercase tracking-widest">No chats yet</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- RIGHT: Chat Messages -->
+    <div class="flex-1 bg-black/40 border border-white/5 rounded-[3rem] backdrop-blur-xl overflow-hidden flex flex-col">
+        {% if selected_video %}
+            <!-- Header -->
+            <div class="p-6 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-[var(--accent-purple)]/20 rounded-xl flex items-center justify-center border border-[var(--accent-purple)]/30">
+                        <i class="fa fa-robot text-[var(--accent-purple)]"></i>
+                    </div>
+                    <div>
+                        <p class="orbitron text-[10px] font-black text-white tracking-widest uppercase">Chat_Log</p>
+                        <p class="text-[9px] text-[var(--accent-cyan)] font-bold italic">{{ selected_video.title }}</p>
+                    </div>
+                </div>
+                <a href="{% url 'ai_chatbot_with_video' selected_video.id %}"
+                   class="px-4 py-2 bg-[var(--accent-cyan)]/10 border border-[var(--accent-cyan)]/20 text-[var(--accent-cyan)] text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-[var(--accent-cyan)] hover:text-black transition-all">
+                    <i class="fa fa-comments mr-1"></i> Continue Chat
+                </a>
+            </div>
+
+            <!-- Messages -->
+            <div class="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar">
+                {% if selected_chats %}
+                    {% for msg in selected_chats %}
+                    <div class="space-y-3">
+                        <!-- User message -->
+                        <div class="flex gap-4 justify-end">
+                            <div class="bg-[var(--accent-cyan)]/10 p-4 rounded-2xl rounded-tr-none border border-[var(--accent-cyan)]/20 max-w-[75%] shadow-lg">
+                                <p class="text-xs text-white">{{ msg.user_message }}</p>
+                                <p class="text-[8px] text-gray-600 mt-2 text-right font-mono">{{ msg.created_at|date:"M d, Y H:i" }}</p>
+                            </div>
+                        </div>
+                        <!-- AI response -->
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-black text-[var(--accent-purple)] flex-shrink-0">AI</div>
+                            <div class="bg-white/5 p-4 rounded-2xl rounded-tl-none border border-white/5 max-w-[75%] shadow-lg">
+                                <p class="text-xs text-gray-300 leading-relaxed">{{ msg.ai_response }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="flex flex-col items-center justify-center h-full text-center py-20 space-y-3">
+                        <i class="fa fa-comment-dots text-4xl text-white/5"></i>
+                        <p class="text-[9px] text-gray-700 uppercase tracking-widest">No messages found</p>
+                    </div>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <!-- No video selected -->
+            <div class="flex-1 flex flex-col items-center justify-center text-center space-y-4 p-20">
+                <i class="fa fa-hand-pointer text-5xl text-white/5 animate-pulse"></i>
+                <h3 class="orbitron text-xs text-gray-500 uppercase tracking-[0.3em]">Select_A_Node</h3>
+                <p class="text-[10px] text-gray-700 max-w-xs">Click a video from the left panel to view its full conversation history</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.custom-scrollbar::-webkit-scrollbar { width: 3px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 10px; }
+</style>
+{% endblock %}

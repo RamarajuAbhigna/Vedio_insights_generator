@@ -156,9 +156,15 @@
                 </p>
             {% endif %}
         </div>
-        
 
-        <a href="{% url 'ai_chatbot' %}"
+        <!-- ✅ DOWNLOAD PDF BUTTON — added here -->
+        <a href="{% url 'download_pdf_report' video.pk %}"
+           class="block w-full bg-transparent border border-[var(--accent-cyan)]/40 hover:border-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/5 text-[var(--accent-cyan)] text-center py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.05)] hover:shadow-[0_0_20px_rgba(0,255,255,0.15)]">
+            <i class="fa fa-file-arrow-down mr-2 opacity-70"></i>
+            Download_Insights_PDF
+        </a>
+
+        <a href="{% url 'ai_chatbot_with_video' video.pk %}"
            class="block w-full glow-button bg-gradient-to-r from-[var(--accent-purple)] to-[#5000b8] text-white text-center py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] shadow-[0_0_20px_rgba(112,0,255,0.2)]">
             Initialize Neural Chat
         </a>

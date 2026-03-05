@@ -32,6 +32,12 @@
     <span class="orbitron text-[10px] tracking-widest">{% translate "Neural Chat" %}</span>
 </a>
 
+<a href="{% url 'chat_history' %}" 
+   class="nav-item {% if 'chat_history' in request.resolver_match.url_name %}active{% endif %}">
+    <i class="fa fa-clock-rotate-left"></i> 
+    <span class="orbitron text-[10px] tracking-widest">{% translate "Chat History" %}</span>
+</a>
+
 <a href="{% url 'analytics_dashboard' %}" 
    class="nav-item {% if request.resolver_match.url_name == 'analytics_dashboard' %}active{% endif %}">
     <i class="fa fa-chart-line"></i> 

@@ -3,81 +3,174 @@
 {% block page_subtitle %}Aggregated activity metrics for your neural nodes.{% endblock %}
 
 {% block content %}
+
 <div class="space-y-8 animate-fade-in">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
-        <div class="bg-black/40 border border-white/5 p-10 rounded-[3rem] backdrop-blur-xl shadow-2xl">
-            <h4 class="orbitron text-xs font-black text-white tracking-widest mb-10 uppercase">Activity_Recognition_Distribution</h4>
-            <div class="space-y-6">
-                <div>
-                    <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
-                        <span>Presentation Mode</span>
-                        <span class="text-[var(--accent-cyan)]">{{ pres_percent|floatformat:0 }}%</span>
-                    </div>
-                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                        <div class="h-full bg-[var(--accent-cyan)] shadow-[0_0_10px_var(--accent-cyan)] transition-all duration-1000" 
-                             style="width: {{ pres_percent }}%"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
-                        <span>Discussion Mode</span>
-                        <span class="text-[var(--accent-purple)]">{{ disc_percent|floatformat:0 }}%</span>
-                    </div>
-                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                        <div class="h-full bg-[var(--accent-purple)] shadow-[0_0_10px_var(--accent-purple)] transition-all duration-1000" 
-                             style="width: {{ disc_percent }}%"></div>
-                    </div>
-                </div>
-            </div>
-            <p class="text-[9px] text-gray-600 font-bold uppercase mt-8 tracking-tighter">
-                Based on {{ total_nodes }} processed neural nodes.
-            </p>
-        </div>
 
-        <div class="bg-black/40 border border-white/5 p-10 rounded-[3rem] backdrop-blur-xl shadow-2xl">
-            <h4 class="orbitron text-xs font-black text-white tracking-widest mb-10 uppercase">Neural_Tone_Consistency</h4>
-            <div class="h-40 flex items-end gap-1 px-2">
-                {% for point in avg_engagement %}
-                <div class="flex-1 bg-gradient-to-t from-[var(--accent-cyan)]/10 to-[var(--accent-cyan)] rounded-t-sm opacity-40 hover:opacity-100 transition-all duration-[1500ms] ease-out hover:shadow-[0_0_15px_var(--accent-cyan)] bar-grow" 
-                     style="height: 0%;" data-height="{{ point }}%"></div>
-                {% empty %}
-                <div class="w-full h-full flex items-center justify-center">
-                    <p class="text-[9px] text-gray-700 italic">No historical engagement data found.</p>
-                </div>
-                {% endfor %}
-            </div>
-            <p class="text-[9px] text-gray-600 font-bold uppercase mt-6 tracking-widest text-center italic">Cross-node engagement synchronization</p>
-        </div>
+```
+<!-- ================= ANALYTICS EXPLANATION ================= -->
+<div class="bg-gradient-to-r from-[var(--accent-cyan)]/5 to-transparent
+            border border-[var(--accent-cyan)]/15
+            p-6 rounded-2xl backdrop-blur-xl">
 
-    </div>
+    <h3 class="orbitron text-sm text-white font-bold tracking-widest mb-3 uppercase">
+        Analytics Intelligence Brief
+    </h3>
 
-    <div class="bg-[var(--accent-cyan)]/5 border border-[var(--accent-cyan)]/10 p-6 rounded-2xl flex items-center justify-between">
-        <div class="flex items-center gap-4">
-            <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Neural Pipeline Status: Fully Synchronized</p>
-        </div>
-        <p class="text-[10px] text-gray-500 font-mono">NODE_UPTIME: 100%</p>
-    </div>
+    <p class="text-xs text-gray-400 leading-relaxed max-w-4xl">
+        The Engagement Hub synthesizes behavioral signals extracted from processed video nodes.
+        <span class="text-[var(--accent-cyan)] font-semibold">Activity Recognition Distribution</span>
+        classifies the dominant interaction pattern detected across your content, while
+        <span class="text-[var(--accent-cyan)] font-semibold">Neural Tone Consistency</span>
+        visualizes temporal engagement stability derived from cross-segment audience energy modeling.
+        Together, these metrics provide a high-level diagnostic of presentation dynamics,
+        viewer retention posture, and delivery coherence across your media pipeline.
+    </p>
 </div>
 
+<!-- ================= DISTRIBUTION ================= -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+    <div class="bg-black/40 border border-white/5 p-10 rounded-[3rem] backdrop-blur-xl shadow-2xl">
+        <h4 class="orbitron text-xs font-black text-white tracking-widest mb-10 uppercase">
+            Activity_Recognition_Distribution
+        </h4>
+
+        {% with pres=pres_percent|default:0 disc=disc_percent|default:0 %}
+        <div class="space-y-6">
+
+            <!-- Presentation -->
+            <div>
+                <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
+                    <span>Presentation Mode</span>
+                    <span class="text-[var(--accent-cyan)]">
+                        {{ pres|floatformat:0 }}%
+                    </span>
+                </div>
+                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-[var(--accent-cyan)] shadow-[0_0_10px_var(--accent-cyan)]
+                                transition-all duration-1000"
+                         style="width: {{ pres|floatformat:2 }}%">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discussion -->
+            <div>
+                <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
+                    <span>Discussion Mode</span>
+                    <span class="text-[var(--accent-purple)]">
+                        {{ disc|floatformat:0 }}%
+                    </span>
+                </div>
+                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-[var(--accent-purple)] shadow-[0_0_10px_var(--accent-purple)]
+                                transition-all duration-1000"
+                         style="width: {{ disc|floatformat:2 }}%">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        {% endwith %}
+
+        <p class="text-[9px] text-gray-600 font-bold uppercase mt-8 tracking-tighter">
+            Based on {{ total_nodes|default:0 }} processed neural nodes.
+        </p>
+    </div>
+
+    <!-- ================= WAVE GRAPH ================= -->
+    <div class="bg-black/40 border border-white/5 p-10 rounded-[3rem] backdrop-blur-xl shadow-2xl">
+        <h4 class="orbitron text-xs font-black text-white tracking-widest mb-10 uppercase">
+            Neural_Tone_Consistency
+        </h4>
+
+        <div class="h-40 flex items-end gap-1 px-2" id="waveContainer">
+
+            {% if avg_engagement %}
+                {% for point in avg_engagement %}
+                <div
+                    class="flex-1 bg-gradient-to-t
+                           from-[var(--accent-cyan)]
+                           via-[var(--accent-cyan)]/70
+                           to-[var(--accent-cyan)]/30
+                           rounded-t-sm opacity-70 hover:opacity-100
+                           transition-all duration-[1500ms] ease-out
+                           hover:shadow-[0_0_15px_var(--accent-cyan)]
+                           bar-grow"
+                    style="height: 0%;"
+                    data-height="{{ point|default:0 }}">
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="w-full h-full flex items-center justify-center">
+                    <p class="text-[9px] text-gray-700 italic">
+                        No historical engagement data found.
+                    </p>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <p class="text-[9px] text-gray-600 font-bold uppercase mt-6 tracking-widest text-center italic">
+            Cross-node engagement synchronization
+        </p>
+    </div>
+
+</div>
+
+<!-- ================= STATUS ================= -->
+<div class="bg-[var(--accent-cyan)]/5 border border-[var(--accent-cyan)]/10
+            p-6 rounded-2xl flex items-center justify-between">
+
+    <div class="flex items-center gap-4">
+        <div class="w-2 h-2 rounded-full animate-pulse
+                    {% if total_nodes %}bg-emerald-500{% else %}bg-yellow-500{% endif %}">
+        </div>
+
+        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+            Neural Pipeline Status:
+            {% if total_nodes %}
+                Fully Synchronized
+            {% else %}
+                Awaiting Signal
+            {% endif %}
+        </p>
+    </div>
+
+    <p class="text-[10px] text-gray-500 font-mono">
+        NODE_UPTIME: {% if total_nodes %}100%{% else %}0%{% endif %}
+    </p>
+</div>
+```
+
+</div>
+
+<!-- ================= SMART WAVE ANIMATION ================= -->
+
 <script>
-    // Trigger staggered "wavy" growth on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        const bars = document.querySelectorAll('.bar-grow');
-        bars.forEach((bar, index) => {
+document.addEventListener('DOMContentLoaded', () => {
+    const bars = document.querySelectorAll('.bar-grow');
+
+    bars.forEach((bar, index) => {
+        const raw = parseFloat(bar.dataset.height || "0");
+        const safeHeight = Math.max(0, Math.min(raw, 100));
+
+        bar.style.height = "0%";
+
+        requestAnimationFrame(() => {
             setTimeout(() => {
-                bar.style.height = bar.getAttribute('data-height');
-            }, index * 40); // 40ms stagger for the wavy effect
+                bar.style.height = safeHeight + "%";
+            }, index * 35);
         });
     });
+});
 </script>
 
 <style>
-    /* Ensure the bars have a smooth rising transition */
-    .bar-grow {
-        transform-origin: bottom;
-        will-change: height;
-    }
+.bar-grow {
+    transform-origin: bottom;
+    will-change: height, opacity;
+}
 </style>
+
 {% endblock %}

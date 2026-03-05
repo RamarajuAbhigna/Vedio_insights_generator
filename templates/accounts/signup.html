@@ -17,7 +17,18 @@
                 Create System Identity
             </p>
         </div>
-
+       {% if messages %}
+<div class="space-y-3">
+    {% for message in messages %}
+    <div class="bg-red-500/20 border border-red-500/40 text-red-300 px-4 py-3 rounded-lg text-sm flex justify-between items-center">
+        <span>{{ message }}</span>
+        <button onclick="this.parentElement.remove()" class="text-red-300 hover:text-white">
+            ✕
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
         <form class="mt-8 space-y-6" method="POST">
             {% csrf_token %}
             <div class="space-y-4">

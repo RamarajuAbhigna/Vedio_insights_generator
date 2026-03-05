@@ -4,12 +4,13 @@ import time
 
 # 1. Setup - Fetch API Key
 api_key = os.environ.get("GEMINI_API_KEY")
+print(f"USING_KEY: {api_key[:10]}...")  # Shows first 10 chars only
 if not api_key:
     # Manual fallback for your local test environment
-    api_key = "AIzaSyA-wbm4CPmGo4pIaRV-PXkI16o29LTkfBU"
+    api_key = "AIzaSyDZcdPMuSpRmejxFJa3wISk26NURWez1rU"
 
 client = genai.Client(api_key=api_key)
-MODEL_ID = "gemini-3-flash-preview"
+MODEL_ID = "gemini-2.0-flash"
 
 def analyze_video():
     print("--- 🎥 Neural Video Analysis Node ---")
