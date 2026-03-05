@@ -28,91 +28,240 @@
             {% if video.video_file %}
                 <video class="w-full rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)]" controls>
                     <source src="{{ video.video_file.url }}" type="video/mp4">
-                    Your browser does not support the video tag.
                 </video>
             {% elif video.embed_url %}
                 <div class="aspect-video w-full rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-                        <iframe width="100%" height="100%"
-                                src="{{ video.embed_url }}"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen>
-                        </iframe>
+                    <iframe width="100%" height="100%" src="{{ video.embed_url }}"
+                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
                 </div>
             {% else %}
                 <div class="aspect-video bg-black flex flex-col items-center justify-center rounded-2xl border border-white/10">
-                    <i class="fa fa-triangle-exclamation text-4xl text-amber-500 mb-4 opacity-50"></i>
-                    <p class="orbitron text-[9px] text-gray-500 tracking-[0.4em] uppercase">
-                        No_Media_Source_Detected
-                    </p>
+                    <p class="orbitron text-[9px] text-gray-500 tracking-[0.4em] uppercase">No_Media_Source_Detected</p>
                 </div>
             {% endif %}
         </div>
 
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- ML MODEL RESULTS — 4 FEATURE CARDS                     -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bg-black/40 border border-[var(--accent-cyan)]/10 p-8 rounded-[3rem] backdrop-blur-xl shadow-2xl">
+
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-2 h-2 rounded-full bg-[var(--accent-cyan)] animate-pulse"></div>
+                <h4 class="orbitron text-[10px] font-black text-[var(--accent-cyan)] tracking-widest uppercase">
+                    ML_Model_Analysis — Local Intelligence Core
+                </h4>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+
+                <!-- CARD 1: Human Presence (YOLOv8) -->
+                <div class="bg-white/3 border border-white/5 rounded-2xl p-5 hover:border-[var(--accent-cyan)]/30 transition-all duration-300">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-lg">👤</span>
+                        <span class="orbitron text-[9px] font-black text-white tracking-widest uppercase">Human Presence</span>
+                    </div>
+                    <div class="text-[9px] text-gray-600 uppercase tracking-widest mb-3 font-bold">YOLOv8 · COCO Dataset</div>
+
+                    {% if human_presence and human_presence.presence_ratio is not None %}
+                        <!-- Presence bar -->
+                        <div class="mb-3">
+                            <div class="flex justify-between text-[10px] mb-1">
+                                <span class="text-gray-400">Present</span>
+                                <span class="text-[var(--accent-cyan)] font-bold">{{ human_presence.presence_ratio|floatformat:0 }}%</span>
+                            </div>
+                            <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                <div class="h-full bg-[var(--accent-cyan)] rounded-full transition-all duration-1000"
+                                     style="width: {{ human_presence.presence_ratio|floatformat:0 }}%"></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-3">
+                            <div class="text-center bg-black/30 rounded-xl p-2">
+                                <div class="text-[var(--accent-cyan)] font-black text-sm">{{ human_presence.present_seconds }}s</div>
+                                <div class="text-[8px] text-gray-600 uppercase">Present</div>
+                            </div>
+                            <div class="text-center bg-black/30 rounded-xl p-2">
+                                <div class="text-gray-400 font-black text-sm">{{ human_presence.absent_seconds }}s</div>
+                                <div class="text-[8px] text-gray-600 uppercase">Absent</div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-[9px] text-gray-600 italic">Processing...</p>
+                    {% endif %}
+                </div>
+
+                <!-- CARD 2: Face Detection (Haar Cascade) -->
+                <div class="bg-white/3 border border-white/5 rounded-2xl p-5 hover:border-[var(--accent-purple)]/30 transition-all duration-300">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-lg">😊</span>
+                        <span class="orbitron text-[9px] font-black text-white tracking-widest uppercase">Face Detection</span>
+                    </div>
+                    <div class="text-[9px] text-gray-600 uppercase tracking-widest mb-3 font-bold">OpenCV · Haar Cascade</div>
+
+                    {% if face_detection and face_detection.face_detected_ratio is not None %}
+                        <div class="mb-3">
+                            <div class="flex justify-between text-[10px] mb-1">
+                                <span class="text-gray-400">Visibility</span>
+                                <span class="text-[var(--accent-purple)] font-bold">
+                                    {% widthratio face_detection.face_detected_ratio 1 100 %}%
+                                </span>
+                            </div>
+                            <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                <div class="h-full bg-[var(--accent-purple)] rounded-full transition-all duration-1000"
+                                     style="width: {% widthratio face_detection.face_detected_ratio 1 100 %}%"></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-3">
+                            <div class="text-center bg-black/30 rounded-xl p-2">
+                                <div class="text-[var(--accent-purple)] font-black text-sm">{{ face_detection.max_faces_in_frame }}</div>
+                                <div class="text-[8px] text-gray-600 uppercase">Max Faces</div>
+                            </div>
+                            <div class="text-center bg-black/30 rounded-xl p-2">
+                                <div class="text-gray-400 font-black text-sm">{{ face_detection.avg_faces_per_frame }}</div>
+                                <div class="text-[8px] text-gray-600 uppercase">Avg/Frame</div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-[9px] text-gray-600 italic">Processing...</p>
+                    {% endif %}
+                </div>
+
+                <!-- CARD 3: Activity Recognition (YOLOv8) -->
+                <div class="bg-white/3 border border-white/5 rounded-2xl p-5 hover:border-emerald-500/30 transition-all duration-300">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-lg">🎯</span>
+                        <span class="orbitron text-[9px] font-black text-white tracking-widest uppercase">Activity Recognition</span>
+                    </div>
+                    <div class="text-[9px] text-gray-600 uppercase tracking-widest mb-3 font-bold">YOLOv8 · Scene Classifier</div>
+
+                    {% if activity_ml and activity_ml.dominant_activity %}
+                        <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2 mb-3 text-center">
+                            <span class="text-emerald-400 font-black text-[11px] uppercase tracking-wide">
+                                {{ activity_ml.dominant_activity }}
+                            </span>
+                        </div>
+                        {% if activity_ml.activity_distribution %}
+                            {% for act, pct in activity_ml.activity_distribution.items %}
+                            <div class="mb-1.5">
+                                <div class="flex justify-between text-[9px] mb-0.5">
+                                    <span class="text-gray-500">{{ act }}</span>
+                                    <span class="text-gray-400">{{ pct }}%</span>
+                                </div>
+                                <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500/60 rounded-full"
+                                         style="width: {{ pct }}%"></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% else %}
+                        <p class="text-[9px] text-gray-600 italic">Processing...</p>
+                    {% endif %}
+                </div>
+
+                <!-- CARD 4: Engagement Trend (KeyBERT) -->
+                <div class="bg-white/3 border border-white/5 rounded-2xl p-5 hover:border-amber-500/30 transition-all duration-300">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-lg">📊</span>
+                        <span class="orbitron text-[9px] font-black text-white tracking-widest uppercase">Engagement Trend</span>
+                    </div>
+                    <div class="text-[9px] text-gray-600 uppercase tracking-widest mb-3 font-bold">KeyBERT · BERT Embeddings</div>
+
+                    {% if engagement_score %}
+                        <!-- Score ring -->
+                        <div class="flex items-center gap-4 mb-3">
+                            <div class="relative w-14 h-14 flex-shrink-0">
+                                <svg class="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
+                                    <circle cx="28" cy="28" r="22" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="4"/>
+                                    <circle cx="28" cy="28" r="22" fill="none"
+                                        stroke="#f59e0b"
+                                        stroke-width="4"
+                                        stroke-dasharray="138.2"
+                                        stroke-dashoffset="{{ engagement_score|floatformat:0 }}"
+                                        stroke-linecap="round"/>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-amber-400 font-black text-xs">{{ engagement_score }}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-white font-black text-sm">{{ engagement_score }}/100</div>
+                                <div class="text-[9px] text-gray-500 uppercase">{{ engagement_trend }}</div>
+                            </div>
+                        </div>
+                        <!-- Mini bar chart -->
+                        {% if engagement_wave %}
+                        <div class="flex items-end gap-0.5 h-8">
+                            {% for point in engagement_wave %}
+                            <div class="flex-1 bg-amber-500/60 rounded-t-sm"
+                                 style="height: {{ point }}%"></div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-[9px] text-gray-600 italic">Processing...</p>
+                    {% endif %}
+                </div>
+
+            </div><!-- end grid -->
+        </div>
+        <!-- ═══════════════════════════════════════════════════════ -->
+
         <!-- CONTENT ANALYTICS PANEL -->
-<div class="bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl space-y-8">
+        <div class="bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl space-y-8">
 
-    <!-- OPTION A: KEY MOMENTS -->
-    <div>
-        <h4 class="orbitron text-[10px] font-black text-[var(--accent-cyan)] tracking-widest uppercase mb-4">
-            Key_Moments_Timeline
-        </h4>
-        <ul class="space-y-2">
-            {% for m in key_moments %}
-            <li class="text-[11px] text-gray-400 flex gap-4">
-                <span class="text-[var(--accent-cyan)] font-mono">{{ m.time }}</span>
-                <span>{{ m.label }}</span>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <!-- OPTION B: SPEECH VS SILENCE -->
-    <div>
-        <h4 class="orbitron text-[10px] font-black text-[var(--accent-purple)] tracking-widest uppercase mb-3">
-            Speech_vs_Silence
-        </h4>
-        <div class="flex items-center gap-4">
-            <div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
-                <div class="h-full bg-[var(--accent-cyan)]"
-                     style="width: {{ speech_ratio }}%"></div>
+            <div>
+                <h4 class="orbitron text-[10px] font-black text-[var(--accent-cyan)] tracking-widest uppercase mb-4">
+                    Key_Moments_Timeline
+                </h4>
+                <ul class="space-y-2">
+                    {% for m in key_moments %}
+                    <li class="text-[11px] text-gray-400 flex gap-4">
+                        <span class="text-[var(--accent-cyan)] font-mono">{{ m.time }}</span>
+                        <span>{{ m.label }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
-            <span class="text-[10px] text-gray-400">
-                {{ speech_ratio }}% Speech / {{ silence_ratio }}% Silence
-            </span>
+
+            <div>
+                <h4 class="orbitron text-[10px] font-black text-[var(--accent-purple)] tracking-widest uppercase mb-3">
+                    Speech_vs_Silence
+                </h4>
+                <div class="flex items-center gap-4">
+                    <div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                        <div class="h-full bg-[var(--accent-cyan)]" style="width: {{ speech_ratio }}%"></div>
+                    </div>
+                    <span class="text-[10px] text-gray-400">{{ speech_ratio }}% Speech / {{ silence_ratio }}% Silence</span>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="orbitron text-[10px] font-black text-white tracking-widest uppercase mb-4">
+                    Vision_Confidence
+                </h4>
+                {% for v in vision_confidence %}
+                <div class="mb-2">
+                    <div class="flex justify-between text-[10px] text-gray-400 mb-1">
+                        <span>{{ v.label }}</span><span>{{ v.confidence }}%</span>
+                    </div>
+                    <div class="h-1 bg-white/10 rounded-full">
+                        <div class="h-full bg-[var(--accent-cyan)]" style="width: {{ v.confidence }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
         </div>
-    </div>
 
-    <!-- OPTION C: VISION CONFIDENCE -->
-    <div>
-        <h4 class="orbitron text-[10px] font-black text-white tracking-widest uppercase mb-4">
-            Vision_Confidence
-        </h4>
-        {% for v in vision_confidence %}
-        <div class="mb-2">
-            <div class="flex justify-between text-[10px] text-gray-400 mb-1">
-                <span>{{ v.label }}</span>
-                <span>{{ v.confidence }}%</span>
-            </div>
-            <div class="h-1 bg-white/10 rounded-full">
-                <div class="h-full bg-[var(--accent-cyan)]"
-                     style="width: {{ v.confidence }}%"></div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-
-</div>
-
-    </div>
+    </div><!-- end left col -->
 
     <!-- RIGHT COLUMN -->
     <div class="space-y-8">
 
         <div class="bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl shadow-lg">
-            <h4 class="orbitron text-[10px] font-black text-white tracking-widest mb-6 uppercase">
-                Vision_Intelligence
-            </h4>
+            <h4 class="orbitron text-[10px] font-black text-white tracking-widest mb-6 uppercase">Vision_Intelligence</h4>
             <div class="flex flex-wrap gap-2">
                 {% for obj in video.objects_detected %}
                     <span class="bg-[var(--accent-cyan)]/5 text-[var(--accent-cyan)] text-[9px] font-black px-3 py-2 rounded-xl border border-[var(--accent-cyan)]/10 uppercase tracking-tighter">
@@ -126,26 +275,17 @@
 
         <div class="bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl h-[420px] flex flex-col shadow-lg border-r-2 border-r-[var(--accent-purple)]/20">
             <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-                <h4 class="orbitron text-[10px] font-black text-[var(--accent-purple)] tracking-widest mb-6 uppercase">
-                    Neural_Transcript
-                </h4>
-
+                <h4 class="orbitron text-[10px] font-black text-[var(--accent-purple)] tracking-widest mb-6 uppercase">Neural_Transcript</h4>
                 <p class="text-xs text-gray-400 leading-relaxed mb-10 italic font-medium">
                     "{{ video.transcript|default:"Decoding audio stream..." }}"
                 </p>
-
-                <h4 class="orbitron text-[10px] font-black text-white tracking-widest mb-4 uppercase">
-                    Topic_Keywords
-                </h4>
+                <h4 class="orbitron text-[10px] font-black text-white tracking-widest mb-4 uppercase">Topic_Keywords</h4>
                 <div class="flex flex-wrap gap-2 mb-6">
                     {% for kw in video.keywords %}
                         <span class="text-[10px] text-gray-500 font-black">#{{ kw }}</span>
                     {% endfor %}
                 </div>
-
-                <h4 class="orbitron text-[10px] font-black text-white tracking-widest mb-4 uppercase">
-                    Summary_Synthesis
-                </h4>
+                <h4 class="orbitron text-[10px] font-black text-white tracking-widest mb-4 uppercase">Summary_Synthesis</h4>
                 <p class="text-[11px] text-gray-500 leading-relaxed font-medium">
                     {{ video.summary|default:"Synthesizing summary node..." }}
                 </p>
@@ -157,11 +297,9 @@
             {% endif %}
         </div>
 
-        <!-- ✅ DOWNLOAD PDF BUTTON — added here -->
         <a href="{% url 'download_pdf_report' video.pk %}"
-           class="block w-full bg-transparent border border-[var(--accent-cyan)]/40 hover:border-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/5 text-[var(--accent-cyan)] text-center py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.05)] hover:shadow-[0_0_20px_rgba(0,255,255,0.15)]">
-            <i class="fa fa-file-arrow-down mr-2 opacity-70"></i>
-            Download_Insights_PDF
+           class="block w-full bg-transparent border border-[var(--accent-cyan)]/40 hover:border-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/5 text-[var(--accent-cyan)] text-center py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] transition-all duration-300">
+            <i class="fa fa-file-arrow-down mr-2 opacity-70"></i>Download_Insights_PDF
         </a>
 
         <a href="{% url 'ai_chatbot_with_video' video.pk %}"
@@ -171,59 +309,37 @@
     </div>
 </div>
 
-<!-- NEURAL WAVE ENGINE -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("neuralWaveCanvas");
+    if (!canvas) return;
     const ctx = canvas.getContext("2d");
-
-    function resize() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-    }
+    function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
     resize();
     window.addEventListener("resize", resize);
-
     let t = 0;
-
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         ctx.beginPath();
         ctx.lineWidth = 3;
         ctx.strokeStyle = "rgba(0,255,255,0.9)";
         ctx.shadowColor = "rgba(0,255,255,0.6)";
         ctx.shadowBlur = 20;
-
         const mid = canvas.height / 2;
-
         for (let x = 0; x <= canvas.width; x++) {
             const p = x / canvas.width;
-
-            const y =
-                mid +
-                Math.sin(p * 10 + t) * 30 +
-                Math.sin(p * 22 + t * 1.5) * 12 +
-                Math.sin(p * 4 - t) * 8;
-
-            if (x === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
+            const y = mid + Math.sin(p * 10 + t) * 30 + Math.sin(p * 22 + t * 1.5) * 12 + Math.sin(p * 4 - t) * 8;
+            if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
         }
-
         ctx.stroke();
         t += 0.035;
         requestAnimationFrame(draw);
     }
-
     draw();
 });
 </script>
 
 <style>
-#neuralWaveCanvas {
-    filter: drop-shadow(0 0 25px rgba(0,255,255,0.5));
-}
-
 .custom-scrollbar::-webkit-scrollbar { width: 3px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 10px; }

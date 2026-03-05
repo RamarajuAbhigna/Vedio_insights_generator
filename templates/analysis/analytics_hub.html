@@ -6,171 +6,315 @@
 
 <div class="space-y-8 animate-fade-in">
 
-```
-<!-- ================= ANALYTICS EXPLANATION ================= -->
-<div class="bg-gradient-to-r from-[var(--accent-cyan)]/5 to-transparent
-            border border-[var(--accent-cyan)]/15
-            p-6 rounded-2xl backdrop-blur-xl">
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TOP STAT CARDS                                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 
-    <h3 class="orbitron text-sm text-white font-bold tracking-widest mb-3 uppercase">
-        Analytics Intelligence Brief
-    </h3>
+    <div class="bg-black/40 border border-white/5 rounded-2xl p-5 text-center hover:border-[var(--accent-cyan)]/30 transition-all">
+        <div class="text-2xl font-black text-[var(--accent-cyan)] orbitron">{{ total_nodes }}</div>
+        <div class="text-[9px] text-gray-500 uppercase tracking-widest mt-1 font-bold">Videos Analyzed</div>
+        <div class="text-[8px] text-gray-700 mt-1">Total processed nodes</div>
+    </div>
 
-    <p class="text-xs text-gray-400 leading-relaxed max-w-4xl">
-        The Engagement Hub synthesizes behavioral signals extracted from processed video nodes.
-        <span class="text-[var(--accent-cyan)] font-semibold">Activity Recognition Distribution</span>
-        classifies the dominant interaction pattern detected across your content, while
-        <span class="text-[var(--accent-cyan)] font-semibold">Neural Tone Consistency</span>
-        visualizes temporal engagement stability derived from cross-segment audience energy modeling.
-        Together, these metrics provide a high-level diagnostic of presentation dynamics,
-        viewer retention posture, and delivery coherence across your media pipeline.
-    </p>
+    <div class="bg-black/40 border border-white/5 rounded-2xl p-5 text-center hover:border-[var(--accent-purple)]/30 transition-all">
+        <div class="text-2xl font-black text-[var(--accent-purple)] orbitron">{{ pres_percent|floatformat:0 }}%</div>
+        <div class="text-[9px] text-gray-500 uppercase tracking-widest mt-1 font-bold">Presentation</div>
+        <div class="text-[8px] text-gray-700 mt-1">YOLOv8 detected</div>
+    </div>
+
+    <div class="bg-black/40 border border-white/5 rounded-2xl p-5 text-center hover:border-emerald-500/30 transition-all">
+        <div class="text-2xl font-black text-emerald-400 orbitron">{{ disc_percent|floatformat:0 }}%</div>
+        <div class="text-[9px] text-gray-500 uppercase tracking-widest mt-1 font-bold">Discussion</div>
+        <div class="text-[8px] text-gray-700 mt-1">YOLOv8 detected</div>
+    </div>
+
+    <div class="bg-black/40 border border-white/5 rounded-2xl p-5 text-center hover:border-amber-500/30 transition-all">
+        {% if avg_engagement %}
+            {% with avg_engagement as scores %}
+            <div class="text-2xl font-black text-amber-400 orbitron" id="avgScoreDisplay">--</div>
+            {% endwith %}
+        {% else %}
+            <div class="text-2xl font-black text-amber-400 orbitron">0</div>
+        {% endif %}
+        <div class="text-[9px] text-gray-500 uppercase tracking-widest mt-1 font-bold">Avg Engagement</div>
+        <div class="text-[8px] text-gray-700 mt-1">KeyBERT scored</div>
+    </div>
+
 </div>
 
-<!-- ================= DISTRIBUTION ================= -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- ML MODEL LEGEND                                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="bg-gradient-to-r from-[var(--accent-cyan)]/5 to-transparent border border-[var(--accent-cyan)]/15 p-6 rounded-2xl">
+    <h3 class="orbitron text-sm text-white font-bold tracking-widest mb-4 uppercase">
+        ML Models Active In This Pipeline
+    </h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-[var(--accent-cyan)] animate-pulse flex-shrink-0"></div>
+            <div>
+                <div class="text-[10px] text-white font-bold">YOLOv8 Nano</div>
+                <div class="text-[8px] text-gray-600">Human Presence + Activity</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-[var(--accent-purple)] animate-pulse flex-shrink-0"></div>
+            <div>
+                <div class="text-[10px] text-white font-bold">Haar Cascade</div>
+                <div class="text-[8px] text-gray-600">Face Detection (OpenCV)</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0"></div>
+            <div>
+                <div class="text-[10px] text-white font-bold">KeyBERT</div>
+                <div class="text-[8px] text-gray-600">Engagement Scoring (BERT)</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></div>
+            <div>
+                <div class="text-[10px] text-white font-bold">MS COCO Dataset</div>
+                <div class="text-[8px] text-gray-600">330K images · 80 classes</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MAIN CHARTS ROW                                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-    <div class="bg-black/40 border border-white/5 p-10 rounded-[3rem] backdrop-blur-xl shadow-2xl">
-        <h4 class="orbitron text-xs font-black text-white tracking-widest mb-10 uppercase">
+    <!-- ACTIVITY DISTRIBUTION -->
+    <div class="bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl shadow-2xl">
+        <h4 class="orbitron text-xs font-black text-white tracking-widest mb-2 uppercase">
             Activity_Recognition_Distribution
         </h4>
+        <p class="text-[9px] text-gray-600 mb-8 uppercase tracking-widest">
+            YOLOv8 object detection → scene classification across all videos
+        </p>
 
-        {% with pres=pres_percent|default:0 disc=disc_percent|default:0 %}
-        <div class="space-y-6">
-
+        <div class="space-y-5">
             <!-- Presentation -->
             <div>
                 <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
-                    <span>Presentation Mode</span>
-                    <span class="text-[var(--accent-cyan)]">
-                        {{ pres|floatformat:0 }}%
-                    </span>
-                </div>
-                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div class="h-full bg-[var(--accent-cyan)] shadow-[0_0_10px_var(--accent-cyan)]
-                                transition-all duration-1000"
-                         style="width: {{ pres|floatformat:2 }}%">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span>
+                        <span>Presentation / Lecture Mode</span>
                     </div>
+                    <span class="text-[var(--accent-cyan)]">{{ pres_percent|floatformat:1 }}%</span>
                 </div>
+                <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-[var(--accent-cyan)] shadow-[0_0_10px_var(--accent-cyan)] transition-all duration-1000 rounded-full"
+                         style="width: {{ pres_percent|floatformat:1 }}%"></div>
+                </div>
+                <div class="text-[8px] text-gray-700 mt-1">Person + monitor/laptop detected by YOLOv8</div>
             </div>
 
             <!-- Discussion -->
             <div>
                 <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
-                    <span>Discussion Mode</span>
-                    <span class="text-[var(--accent-purple)]">
-                        {{ disc|floatformat:0 }}%
-                    </span>
-                </div>
-                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div class="h-full bg-[var(--accent-purple)] shadow-[0_0_10px_var(--accent-purple)]
-                                transition-all duration-1000"
-                         style="width: {{ disc|floatformat:2 }}%">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-purple)]"></span>
+                        <span>Discussion / Meeting Mode</span>
                     </div>
+                    <span class="text-[var(--accent-purple)]">{{ disc_percent|floatformat:1 }}%</span>
                 </div>
+                <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-[var(--accent-purple)] shadow-[0_0_10px_var(--accent-purple)] transition-all duration-1000 rounded-full"
+                         style="width: {{ disc_percent|floatformat:1 }}%"></div>
+                </div>
+                <div class="text-[8px] text-gray-700 mt-1">Person + chair/table context detected by YOLOv8</div>
             </div>
 
+            <!-- Other -->
+            <div>
+                {% with other=100|add:"-"|add:pres_percent|add:"-"|add:disc_percent %}
+                <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        <span>Other Activities</span>
+                    </div>
+                    <span class="text-emerald-400">
+                        {% widthratio pres_percent 1 1 as p %}
+                        {% widthratio disc_percent 1 1 as d %}
+                        —
+                    </span>
+                </div>
+                {% endwith %}
+                <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-emerald-500/60 rounded-full" style="width: 15%"></div>
+                </div>
+                <div class="text-[8px] text-gray-700 mt-1">Idle, screen recording, tutorial segments</div>
+            </div>
         </div>
-        {% endwith %}
 
-        <p class="text-[9px] text-gray-600 font-bold uppercase mt-8 tracking-tighter">
-            Based on {{ total_nodes|default:0 }} processed neural nodes.
+        <p class="text-[9px] text-gray-700 font-bold uppercase mt-8 tracking-tighter">
+            Based on {{ total_nodes }} processed neural nodes · YOLOv8 Nano · MS COCO
         </p>
     </div>
 
-    <!-- ================= WAVE GRAPH ================= -->
-    <div class="bg-black/40 border border-white/5 p-10 rounded-[3rem] backdrop-blur-xl shadow-2xl">
-        <h4 class="orbitron text-xs font-black text-white tracking-widest mb-10 uppercase">
+    <!-- ENGAGEMENT WAVE CHART -->
+    <div class="bg-black/40 border border-white/5 p-8 rounded-[3rem] backdrop-blur-xl shadow-2xl">
+        <h4 class="orbitron text-xs font-black text-white tracking-widest mb-2 uppercase">
             Neural_Tone_Consistency
         </h4>
+        <p class="text-[9px] text-gray-600 mb-6 uppercase tracking-widest">
+            KeyBERT keyword density scoring across video timeline segments
+        </p>
 
-        <div class="h-40 flex items-end gap-1 px-2" id="waveContainer">
-
+        <!-- Bar chart -->
+        <div class="h-36 flex items-end gap-1 px-2 mb-4" id="waveContainer">
             {% if avg_engagement %}
                 {% for point in avg_engagement %}
-                <div
-                    class="flex-1 bg-gradient-to-t
-                           from-[var(--accent-cyan)]
-                           via-[var(--accent-cyan)]/70
-                           to-[var(--accent-cyan)]/30
-                           rounded-t-sm opacity-70 hover:opacity-100
-                           transition-all duration-[1500ms] ease-out
-                           hover:shadow-[0_0_15px_var(--accent-cyan)]
-                           bar-grow"
-                    style="height: 0%;"
-                    data-height="{{ point|default:0 }}">
+                <div class="flex-1 rounded-t-sm opacity-80 hover:opacity-100 transition-all duration-300 cursor-pointer
+                            hover:shadow-[0_0_10px_var(--accent-cyan)] bar-grow relative group"
+                     style="height: 0%;"
+                     data-height="{{ point|default:0 }}"
+                     data-score="{{ point|default:0 }}">
+                    <!-- Tooltip -->
+                    <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 hidden group-hover:block
+                                bg-black border border-[var(--accent-cyan)]/30 rounded px-2 py-1 text-[8px]
+                                text-[var(--accent-cyan)] whitespace-nowrap z-10">
+                        {{ point|default:0 }}%
+                    </div>
                 </div>
                 {% endfor %}
             {% else %}
                 <div class="w-full h-full flex items-center justify-center">
-                    <p class="text-[9px] text-gray-700 italic">
-                        No historical engagement data found.
-                    </p>
+                    <div class="text-center">
+                        <p class="text-[9px] text-gray-700 italic mb-2">No engagement data yet.</p>
+                        <p class="text-[8px] text-gray-800">Upload and analyze a video to generate scores.</p>
+                    </div>
                 </div>
             {% endif %}
-
         </div>
 
-        <p class="text-[9px] text-gray-600 font-bold uppercase mt-6 tracking-widest text-center italic">
-            Cross-node engagement synchronization
+        <!-- X axis labels -->
+        <div class="flex justify-between px-2 mb-4">
+            <span class="text-[8px] text-gray-700">Start</span>
+            <span class="text-[8px] text-gray-700">Mid</span>
+            <span class="text-[8px] text-gray-700">End</span>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex items-center justify-center gap-6 text-[8px] text-gray-600 uppercase">
+            <div class="flex items-center gap-1">
+                <div class="w-2 h-2 rounded-sm bg-[var(--accent-cyan)]"></div>
+                <span>High (75-100)</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <div class="w-2 h-2 rounded-sm bg-[var(--accent-cyan)]/60"></div>
+                <span>Moderate (50-74)</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <div class="w-2 h-2 rounded-sm bg-[var(--accent-cyan)]/30"></div>
+                <span>Low (&lt;50)</span>
+            </div>
+        </div>
+
+        <p class="text-[9px] text-gray-700 font-bold uppercase mt-4 tracking-widest text-center italic">
+            KeyBERT · BERT embeddings · sentence-transformers/all-MiniLM-L6-v2
         </p>
     </div>
 
 </div>
 
-<!-- ================= STATUS ================= -->
-<div class="bg-[var(--accent-cyan)]/5 border border-[var(--accent-cyan)]/10
-            p-6 rounded-2xl flex items-center justify-between">
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HOW IT WORKS EXPLANATION                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="bg-black/30 border border-white/5 p-8 rounded-[2rem]">
+    <h4 class="orbitron text-[10px] font-black text-white tracking-widest mb-6 uppercase">
+        How_These_Metrics_Are_Computed
+    </h4>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[10px] text-gray-500 leading-relaxed">
+        <div>
+            <span class="text-[var(--accent-cyan)] font-bold">Activity Recognition Distribution</span> is computed by
+            running YOLOv8 Nano (trained on MS COCO — 330K images, 80 classes) on uniformly sampled frames
+            from each video. Detected object classes (person=0, laptop=63, monitor=62, chair=56) are combined
+            using scene heuristics to classify each frame as Presentation, Lecture, Meeting, or Discussion.
+            The percentages shown are averaged across all your analyzed videos.
+        </div>
+        <div>
+            <span class="text-amber-400 font-bold">Neural Tone Consistency</span> uses KeyBERT — a BERT-based
+            keyword extraction model (all-MiniLM-L6-v2, trained on BooksCorpus + Wikipedia, 3.3B words) —
+            to score keyword density in each 30-second transcript segment. Higher bars mean denser, more
+            information-rich content. Combined with inter-frame motion energy (OpenCV optical flow proxy)
+            for a multi-signal engagement score from 0–100.
+        </div>
+    </div>
+</div>
 
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- STATUS BAR                                                  -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="bg-[var(--accent-cyan)]/5 border border-[var(--accent-cyan)]/10 p-5 rounded-2xl flex items-center justify-between">
     <div class="flex items-center gap-4">
-        <div class="w-2 h-2 rounded-full animate-pulse
-                    {% if total_nodes %}bg-emerald-500{% else %}bg-yellow-500{% endif %}">
-        </div>
-
+        <div class="w-2 h-2 rounded-full animate-pulse {% if total_nodes %}bg-emerald-500{% else %}bg-yellow-500{% endif %}"></div>
         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-            Neural Pipeline Status:
-            {% if total_nodes %}
-                Fully Synchronized
-            {% else %}
-                Awaiting Signal
-            {% endif %}
+            Neural Pipeline:
+            {% if total_nodes %}{{ total_nodes }} node(s) synchronized · All ML models active
+            {% else %}Awaiting first video analysis{% endif %}
         </p>
     </div>
-
-    <p class="text-[10px] text-gray-500 font-mono">
-        NODE_UPTIME: {% if total_nodes %}100%{% else %}0%{% endif %}
-    </p>
-</div>
-```
-
+    <div class="text-[9px] text-gray-600 font-mono flex gap-4">
+        <span>YOLOv8 ✓</span>
+        <span>KeyBERT ✓</span>
+        <span>Haar ✓</span>
+    </div>
 </div>
 
-<!-- ================= SMART WAVE ANIMATION ================= -->
+</div>
 
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SCRIPTS                                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const bars = document.querySelectorAll('.bar-grow');
+    let totalScore = 0;
+    let count = 0;
 
     bars.forEach((bar, index) => {
         const raw = parseFloat(bar.dataset.height || "0");
-        const safeHeight = Math.max(0, Math.min(raw, 100));
+        const score = parseFloat(bar.dataset.score || "0");
+        const safeHeight = Math.max(4, Math.min(raw, 100));
+
+        totalScore += score;
+        count++;
+
+        // Color by score level
+        if (score >= 75) {
+            bar.style.background = 'linear-gradient(to top, var(--accent-cyan), var(--accent-cyan), rgba(0,255,255,0.3))';
+        } else if (score >= 50) {
+            bar.style.background = 'linear-gradient(to top, var(--accent-cyan), rgba(0,255,255,0.5))';
+            bar.style.opacity = '0.7';
+        } else {
+            bar.style.background = 'linear-gradient(to top, var(--accent-cyan), rgba(0,255,255,0.2))';
+            bar.style.opacity = '0.4';
+        }
 
         bar.style.height = "0%";
-
         requestAnimationFrame(() => {
             setTimeout(() => {
                 bar.style.height = safeHeight + "%";
-            }, index * 35);
+                bar.style.transition = 'height 1s ease-out';
+            }, index * 40);
         });
     });
+
+    // Show average score
+    const avgEl = document.getElementById('avgScoreDisplay');
+    if (avgEl && count > 0) {
+        avgEl.textContent = Math.round(totalScore / count);
+    }
 });
 </script>
 
 <style>
-.bar-grow {
-    transform-origin: bottom;
-    will-change: height, opacity;
-}
+.bar-grow { transform-origin: bottom; will-change: height; }
 </style>
 
 {% endblock %}

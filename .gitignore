@@ -9,3 +9,11 @@ db.sqlite3
 
 venv/
 .env/
+
+*.pt
+
+.DS_Store
+Thumbs.db
+
+.env
+.env.*

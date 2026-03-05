@@ -57,3 +57,7 @@ idna==3.11
 # Typing
 # -------------------------
 typing_extensions==4.15.0
+ultralytics
+opencv-python
+keybert
+sentence-transformers
