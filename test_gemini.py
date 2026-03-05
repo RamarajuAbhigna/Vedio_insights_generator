@@ -7,7 +7,7 @@ api_key = os.environ.get("GEMINI_API_KEY")
 print(f"USING_KEY: {api_key[:10]}...")  # Shows first 10 chars only
 if not api_key:
     # Manual fallback for your local test environment
-    api_key = "AIzaSyDZcdPMuSpRmejxFJa3wISk26NURWez1rU"
+    api_key = "Your key"
 
 client = genai.Client(api_key=api_key)
 MODEL_ID = "gemini-2.0-flash"
