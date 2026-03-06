@@ -25,3 +25,5 @@ jobs:
 
     - name: Print Success Message
       run: echo "AI Based Vedio Insight Generator CI successful!"
+    - name: Checkout Repository
+      uses: actions/checkout@v4
