@@ -38,8 +38,12 @@ jobs:
 
       - name: Verify requirements.txt
         run: |
-          echo "requirements.txt contents:"
-          cat requirements.txt || echo "No requirements.txt found"
+          echo "Checking requirements.txt..."
+          if [ -f requirements.txt ]; then
+            cat requirements.txt
+          else
+            echo "No requirements.txt found — skipping"
+          fi
 
       - name: Count Project Files
         run: |
